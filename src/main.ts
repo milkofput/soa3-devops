@@ -1,9 +1,11 @@
-import { UserRoleEnum } from './core/common/enums/UserRoleEnum';
-import { Project } from './core/common/models/Project';
-import { User } from './core/common/models/User';
-import { BacklogItemStatusEnum } from './core/issuemanagement/enums/BacklogItemStatusEnum';
-import { BacklogItem } from './core/issuemanagement/models/BacklogItem';
-import { Sprint } from './core/issuemanagement/models/Sprint';
+import { UserRoleEnum } from './domain/common/enums/UserRoleEnum';
+import { Project } from './domain/common/models/Project';
+import { User } from './domain/common/models/User';
+import { BacklogItemStatusEnum } from './domain/issuemanagement/enums/BacklogItemStatusEnum';
+import { BacklogItem } from './domain/issuemanagement/models/BacklogItem';
+import { Sprint } from './domain/issuemanagement/models/Sprint';
+import { BacklogItemNotifier } from './domain/notifications/models/BacklogItemEventNotifier';
+import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
 
 console.log('SOA3 Eindopdracht: Avans DevOps');
 
@@ -28,21 +30,18 @@ let sprintOne = new Sprint(
 );
 
 let items = [
-    new BacklogItem(
-        uuid(),
-        'User Story 1',
-        'As a user, I want to be able to log in.',
-        3,
-        BacklogItemStatusEnum.TODO,
-    ).assignTo(dev1),
-    new BacklogItem(
-        uuid(),
-        'User Story 2',
-        'As a user, I want to be able to log out.',
-        2,
-        BacklogItemStatusEnum.TODO,
+    new BacklogItem(uuid(), 'User Story 1', 'As a user, I want to be able to log in.', 3).assignTo(
+        dev1,
     ),
+    new BacklogItem(uuid(), 'User Story 2', 'As a user, I want to be able to log out.', 2),
 ];
+
+items.forEach((item) => {
+    item.addObserver(new BacklogItemNotifier());
+});
+
+let sprintEventNotifier = new SprintEventNotifier();
+sprintOne.addObserver(sprintEventNotifier);
 
 sprintOne.addBacklogItems(...items);
 callACar.addSprint(sprintOne);
@@ -73,4 +72,6 @@ function displaySprintDetails(sprint: Sprint, project: Project) {
     console.log('\n==================================================');
 }
 
-displaySprintDetails(sprintOne, callACar);
+items[0].setStatus(BacklogItemStatusEnum.TESTING);
+
+items[0].setStatus(BacklogItemStatusEnum.TODO);

@@ -1,20 +1,39 @@
 import { User } from '../../common/models/User';
+import { IObserver } from '../../notifications/interfaces/IObserver';
+import { ISubject } from '../../notifications/interfaces/ISubject';
 import { BacklogItemStatusEnum } from '../enums/BacklogItemStatusEnum';
 import { Activity } from './Activity';
 import { Discussion } from './Discussion';
 
-export class BacklogItem {
+export class BacklogItem implements ISubject<BacklogItem> {
+    private readonly observers: IObserver<BacklogItem>[] = [];
     private assignee?: User;
+    private status: BacklogItemStatusEnum = BacklogItemStatusEnum.TODO;
     constructor(
         private readonly id: string,
         private readonly title: string,
         private readonly description: string,
         private readonly storyPoints: number,
-        private readonly status: BacklogItemStatusEnum,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
         //private readonly relatedBranch: Branch[] = [],
     ) {}
+
+    addObserver(observer: IObserver<BacklogItem>): void {
+        if (!this.observers.includes(observer)) {
+            this.observers.push(observer);
+        }
+    }
+    removeObserver(observer: IObserver<BacklogItem>): void {
+        if (this.observers.includes(observer)) {
+            this.observers.splice(this.observers.indexOf(observer), 1);
+        }
+    }
+    notifyObservers(): void {
+        for (const observer of this.observers) {
+            observer.update(this);
+        }
+    }
 
     getId(): string {
         return this.id;
@@ -46,6 +65,12 @@ export class BacklogItem {
 
     getDiscussions(): Discussion[] {
         return this.discussions;
+    }
+
+    setStatus(status: BacklogItemStatusEnum): BacklogItem {
+        this.status = status;
+        this.notifyObservers();
+        return this;
     }
 
     assignTo(user: User): BacklogItem {

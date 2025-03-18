@@ -1,8 +1,11 @@
 import { User } from '../../common/models/User';
+import { IObserver } from '../../notifications/interfaces/IObserver';
+import { ISubject } from '../../notifications/interfaces/ISubject';
 import { BacklogItem } from './BacklogItem';
 
-export class Sprint {
+export class Sprint implements ISubject<Sprint> {
     //private readonly reviewDocument?: ReviewDocument;
+    private readonly observers: IObserver<Sprint>[] = [];
     constructor(
         private readonly id: string,
         private readonly name: string,
@@ -14,8 +17,25 @@ export class Sprint {
         private readonly backlogItems: BacklogItem[] = [],
     ) {}
 
+    addObserver(observer: IObserver<Sprint>): void {
+        if (!this.observers.includes(observer)) {
+            this.observers.push(observer);
+        }
+    }
+    removeObserver(observer: IObserver<Sprint>): void {
+        if (this.observers.includes(observer)) {
+            this.observers.splice(this.observers.indexOf(observer), 1);
+        }
+    }
+    notifyObservers(): void {
+        for (const observer of this.observers) {
+            observer.update(this);
+        }
+    }
+
     addBacklogItems(...backlogItems: BacklogItem[]): void {
         this.backlogItems.push(...backlogItems);
+        this.notifyObservers();
     }
 
     getId(): string {
