@@ -1,23 +1,51 @@
+import { BacklogItem } from '../../issuemanagement/models/BacklogItem';
 import { Sprint } from '../../issuemanagement/models/Sprint';
+import { ProductBacklog } from './ProductBacklog';
 import { User } from './User';
 
 export class Project {
     constructor(
         private readonly id: string,
         private readonly name: string,
+        private readonly backlog: ProductBacklog,
+        private readonly description: string = "",
         private readonly sprints: Sprint[] = [],
-        //private readonly backlog: ProductBacklog,
         private readonly members: User[] = [],
         //private readonly scmReposity: SCMRepository,
         //private readonly pipelines: Pipeline[],
-    ) {}
+    ) { }
 
+    addMembers(...members: User[]): void {
+        this.members.push(...members);
+    }
+
+    addSprint(sprint: Sprint): void {
+        this.sprints.push(sprint);
+    }
+
+    addBacklogItems(...backlogItems: BacklogItem[]): void {
+        this.backlog.addBacklogItems(...backlogItems);
+    }
+
+    removeBacklogItems(...backlogItems: BacklogItem[]): void {
+        this.backlog.removeBacklogItems(...backlogItems);
+    }
+
+    // createPipeline(): void {
+    //     // create pipeline  
+    // }
+
+    // gettters
     getId(): string {
         return this.id;
     }
 
     getName(): string {
         return this.name;
+    }
+
+    getDescription(): string {
+        return this.description;
     }
 
     getSprints(): Sprint[] {
@@ -28,11 +56,4 @@ export class Project {
         return this.members;
     }
 
-    addSprint(sprint: Sprint): void {
-        this.sprints.push(sprint);
-    }
-
-    addMembers(...members: User[]): void {
-        this.members.push(...members);
-    }
 }

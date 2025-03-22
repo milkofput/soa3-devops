@@ -1,4 +1,5 @@
 import { UserRoleEnum } from './domain/common/enums/UserRoleEnum';
+import { ProductBacklog } from './domain/common/models/ProductBacklog';
 import { Project } from './domain/common/models/Project';
 import { User } from './domain/common/models/User';
 import { BacklogItemStatusEnum } from './domain/issuemanagement/enums/BacklogItemStatusEnum';
@@ -15,7 +16,7 @@ const uuid = () => {
     );
 };
 
-let callACar = new Project(uuid(), 'Call a Car');
+let callACar = new Project(uuid(), 'Call a Car', new ProductBacklog(uuid()));
 let scrumMaster = new User('1', 'John Doe', 'john.doe@example.com', UserRoleEnum.SCRUMMASTER);
 let dev1 = new User('2', 'Jane Smith', 'jane.smith@example.com', UserRoleEnum.DEVELOPER);
 let dev2 = new User('3', 'Alice Johnson', 'alice.johnson@example.com', UserRoleEnum.DEVELOPER);
@@ -63,8 +64,7 @@ function displaySprintDetails(sprint: Sprint, project: Project) {
         console.log(`   Status: ${item.getStatus()}`);
         console.log(`   Story Points: ${item.getStoryPoints()}`);
         console.log(
-            `   Assignee: ${item.getAssignee()?.getName() ?? 'Unassigned'} (${
-                item.getAssignee()?.getRole() ?? 'N/A'
+            `   Assignee: ${item.getAssignee()?.getName() ?? 'Unassigned'} (${item.getAssignee()?.getRole() ?? 'N/A'
             })`,
         );
     });

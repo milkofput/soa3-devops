@@ -5,9 +5,18 @@ export class User {
         private readonly id: string,
         private readonly name: string,
         private readonly email: string,
-        private readonly role: UserRoleEnum,
-    ) {}
+        private role: UserRoleEnum,
+    ) { }
 
+    hasRole(role: UserRoleEnum): boolean {
+        return this.role === role;
+    }
+
+    addRole(role: UserRoleEnum): void {
+        this.role = role;
+    }
+
+    // getters
     getId(): string {
         return this.id;
     }
@@ -22,5 +31,9 @@ export class User {
 
     getRole(): string {
         return this.role;
+    }
+
+    toString(): string {
+        return `${this.name} <${this.email}>`;
     }
 }

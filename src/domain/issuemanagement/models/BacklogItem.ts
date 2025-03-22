@@ -12,12 +12,12 @@ export class BacklogItem implements ISubject<BacklogItem> {
     constructor(
         private readonly id: string,
         private readonly title: string,
-        private readonly description: string,
-        private readonly storyPoints: number,
+        private readonly description: string = "",
+        private readonly storyPoints: number = 0,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
-        //private readonly relatedBranch: Branch[] = [],
-    ) {}
+        //private readonly relatedBranches: Branch[] = [],
+    ) { }
 
     addObserver(observer: IObserver<BacklogItem>): void {
         if (!this.observers.includes(observer)) {
@@ -35,6 +35,50 @@ export class BacklogItem implements ISubject<BacklogItem> {
         }
     }
 
+    setStatus(status: BacklogItemStatusEnum): void {
+        this.status = status;
+        this.notifyObservers();
+    }
+
+    assignTo(user: User): void {
+        this.assignee = user;
+    }
+
+    addActivity(activity: Activity): void {
+        this.activities.push(activity);
+    }
+
+    addDiscussion(discussion: Discussion): void {
+        this.discussions.push(discussion);
+        // this.notifyObservers();
+    }
+
+    // linkBranch(branch: string): BacklogItem {
+    //     //this.relatedBranches.push(branch);
+    //     return this;
+    // }
+
+    isInProgress(): void {
+        this.status === BacklogItemStatusEnum.DOING;
+    }
+
+    isReady(): void {
+        this.status === BacklogItemStatusEnum.READY_FOR_TESTING;
+    }
+
+    isInTesting(): void {
+        this.status === BacklogItemStatusEnum.TESTING;
+    }
+
+    isTested(): void {
+        this.status === BacklogItemStatusEnum.TESTED;
+    }
+
+    isDone(): void {
+        this.status === BacklogItemStatusEnum.DONE;
+    }
+
+    // getters
     getId(): string {
         return this.id;
     }
@@ -65,16 +109,5 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     getDiscussions(): Discussion[] {
         return this.discussions;
-    }
-
-    setStatus(status: BacklogItemStatusEnum): BacklogItem {
-        this.status = status;
-        this.notifyObservers();
-        return this;
-    }
-
-    assignTo(user: User): BacklogItem {
-        this.assignee = user;
-        return this;
     }
 }
