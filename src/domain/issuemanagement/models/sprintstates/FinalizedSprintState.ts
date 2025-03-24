@@ -5,22 +5,22 @@ export class FinalizedSprintState implements ISprintState {
     constructor(private readonly sprint: Sprint) { }
 
     public create(): void {
-        console.log("🚫 Sprint is already finalized");
+        console.log(`\n🚫 ${this.sprint.getName()} already finalized`);
     }
 
     public start(): void {
-        console.log("🚫 Sprint is already finalized");
+        console.log(`\n🚫 ${this.sprint.getName()} already finalized`);
     }
 
     public finish(): void {
-        console.log("🚫 Sprint is already finalized");
+        console.log(`\n🚫 ${this.sprint.getName()} already finalized`);
     }
 
     public finalize(): void {
-        console.log("🚫 Sprint is already finalized");
+        console.log(`\n🚫 ${this.sprint.getName()} already finalized`);
     }
 
     public cancel(): void {
-        console.log("🚫 Sprint is already finalized");
+        console.log(`\n🚫 ${this.sprint.getName()} already finalized`);
     }
 }

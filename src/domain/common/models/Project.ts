@@ -8,6 +8,7 @@ export class Project {
         private readonly id: string,
         private readonly name: string,
         private readonly backlog: ProductBacklog,
+        private readonly productOwner: User,
         private readonly description: string = "",
         private readonly sprints: Sprint[] = [],
         private readonly members: User[] = [],
@@ -54,6 +55,10 @@ export class Project {
 
     getMembers(): User[] {
         return this.members;
+    }
+
+    getProductOwner(): User {
+        return this.productOwner;
     }
 
 }

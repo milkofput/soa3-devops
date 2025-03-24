@@ -5,22 +5,22 @@ export class CancelledSprintState implements ISprintState {
     constructor(private readonly sprint: Sprint) { }
 
     public create(): void {
-        console.log("🚫 Sprint is already cancelled");
+        console.log(`\n🚫 ${this.sprint.getName()} already cancelled`);
     }
 
     public start(): void {
-        console.log("🚫 Sprint is already cancelled");
+        console.log(`\n🚫 ${this.sprint.getName()} already cancelled`);
     }
 
     public finish(): void {
-        console.log("🚫 Sprint is already cancelled");
+        console.log(`\n🚫 ${this.sprint.getName()} already cancelled`);
     }
 
     public finalize(): void {
-        console.log("🚫 Sprint is already cancelled");
+        console.log(`\n🚫 ${this.sprint.getName()} already cancelled`);
     }
 
     public cancel(): void {
-        console.log("🚫 Sprint is already cancelled");
+        console.log(`\n🚫 ${this.sprint.getName()} already cancelled`);
     }
 }

@@ -6,6 +6,11 @@ import { ReviewDocument } from './ReviewDocument';
 import { ISprintState } from '../interfaces/ISprintState';
 import { CreatedSprintState } from './sprintstates/CreatedSprintState';
 import { ISprintStrategy } from '../interfaces/ISprintStrategy';
+import { Pipeline } from '../../cicd/models/Pipeline';
+import { ExecutionVisitor } from '../../cicd/models/ExecutionVisitor';
+import { IPipelineVisitor } from '../../cicd/interface/IPipelineVisitor';
+import { IEvent } from '../../notifications/interfaces/IEvent';
+import { PipelineOutcomeEvent } from '../../notifications/models/events/PipelineOutcomeEvent';
 
 export class Sprint implements ISubject<Sprint> {
     private reviewDocument?: ReviewDocument;
@@ -18,8 +23,8 @@ export class Sprint implements ISubject<Sprint> {
         private readonly endDate: Date,
         private readonly scrumMaster: User,
         private readonly strategy: ISprintStrategy,
+        private releasePipeline?: Pipeline,
         private state: ISprintState = new CreatedSprintState(this),
-        //private readonly releasePipeline: Pipeline,
         private backlogItems: BacklogItem[] = [],
     ) { }
 
@@ -33,9 +38,9 @@ export class Sprint implements ISubject<Sprint> {
             this.observers.splice(this.observers.indexOf(observer), 1);
         }
     }
-    notifyObservers(): void {
+    notifyObservers(e?: IEvent): void {
         for (const observer of this.observers) {
-            observer.update(this);
+            observer.update(this, e);
         }
     }
 
@@ -52,6 +57,13 @@ export class Sprint implements ISubject<Sprint> {
 
     addReviewDocument(reviewDocument: ReviewDocument): void {
         this.reviewDocument = reviewDocument;
+    }
+
+    runPipeline(visitor: IPipelineVisitor): void {
+        if (this.releasePipeline) {
+            this.releasePipeline.run(visitor);
+            this.notifyObservers(new PipelineOutcomeEvent(this));
+        }
     }
 
     // generateReport(): void {
@@ -121,5 +133,13 @@ export class Sprint implements ISubject<Sprint> {
 
     getDocument(): ReviewDocument | undefined {
         return this.reviewDocument;
+    }
+
+    getReleasePipeline(): Pipeline | undefined {
+        return this.releasePipeline;
+    }
+
+    setPipeline(pipeline: Pipeline): void {
+        this.releasePipeline = pipeline;
     }
 }
