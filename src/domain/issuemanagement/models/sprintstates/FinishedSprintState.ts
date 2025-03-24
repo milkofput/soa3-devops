@@ -1,5 +1,6 @@
 import { ISprintState } from "../../interfaces/ISprintState";
 import { Sprint } from "../Sprint";
+import { CancelledSprintState } from "./CancelledSprintState";
 
 export class FinishedSprintState implements ISprintState {
     constructor(private readonly sprint: Sprint) { }
@@ -21,6 +22,7 @@ export class FinishedSprintState implements ISprintState {
     }
 
     public cancel(): void {
-        // iets met template pattern doen
+        this.sprint.setState(new CancelledSprintState(this.sprint));
+        console.log("Sprint is cancelled");
     }
 }

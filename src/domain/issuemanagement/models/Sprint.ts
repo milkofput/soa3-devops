@@ -8,7 +8,7 @@ import { CreatedSprintState } from './sprintstates/CreatedSprintState';
 import { ISprintStrategy } from '../interfaces/ISprintStrategy';
 
 export class Sprint implements ISubject<Sprint> {
-    private readonly reviewDocument?: ReviewDocument;
+    private reviewDocument?: ReviewDocument;
     private readonly observers: IObserver<Sprint>[] = [];
     private statusMessage: string = "";
     constructor(
@@ -49,6 +49,10 @@ export class Sprint implements ISubject<Sprint> {
             (item) => !backlogItems.some((backlogItem) => backlogItem.getId() === item.getId()),
         );
         // this.notifyObservers();
+    }
+
+    addReviewDocument(reviewDocument: ReviewDocument): void {
+        this.reviewDocument = reviewDocument;
     }
 
     // generateReport(): void {
@@ -116,12 +120,7 @@ export class Sprint implements ISubject<Sprint> {
         return this.backlogItems;
     }
 
-    getDocument(): ReviewDocument {
-        if (this.reviewDocument) {
-            return this.reviewDocument;
-        }
-        else {
-            throw new Error("No review document available");
-        }
+    getDocument(): ReviewDocument | undefined {
+        return this.reviewDocument;
     }
 }
