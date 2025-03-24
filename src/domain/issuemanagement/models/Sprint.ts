@@ -41,14 +41,13 @@ export class Sprint implements ISubject<Sprint> {
 
     addBacklogItems(...backlogItems: BacklogItem[]): void {
         this.backlogItems.push(...backlogItems);
-        this.notifyObservers();
+        backlogItems.forEach((item) => item.setSprint(this));
     }
 
     removeBacklogItems(...backlogItems: BacklogItem[]): void {
         this.backlogItems = this.backlogItems.filter(
             (item) => !backlogItems.some((backlogItem) => backlogItem.getId() === item.getId()),
         );
-        // this.notifyObservers();
     }
 
     addReviewDocument(reviewDocument: ReviewDocument): void {

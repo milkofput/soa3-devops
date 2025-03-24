@@ -9,6 +9,8 @@ import { Sprint } from './domain/issuemanagement/models/Sprint';
 import { ReleaseSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReleaseSprintStrategy';
 import { ReviewSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReviewSprintStrategy';
 import { BacklogItemNotifier } from './domain/notifications/models/BacklogItemEventNotifier';
+import { EmailNotificationAdapter } from './domain/notifications/models/EmailNotificationAdapter';
+import { SlackNotificationAdapter } from './domain/notifications/models/SlackNotificationAdapter';
 import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
 
 try {
@@ -22,10 +24,10 @@ try {
     };
 
     let callACar = new Project(uuid(), 'Call a Car', new ProductBacklog(uuid()));
-    let scrumMaster = new User('1', 'John Doe', 'john.doe@example.com', UserRoleEnum.SCRUMMASTER);
-    let dev1 = new User('2', 'Jane Smith', 'jane.smith@example.com', UserRoleEnum.DEVELOPER);
-    let dev2 = new User('3', 'Alice Johnson', 'alice.johnson@example.com', UserRoleEnum.DEVELOPER);
-    callACar.addMembers(scrumMaster, dev1, dev2);
+    let scrumMaster = new User('1', 'John Doe', 'john.doe@example.com', UserRoleEnum.SCRUMMASTER, new SlackNotificationAdapter());
+    let dev1 = new User('2', 'Jane Smith', 'jane.smith@example.com', UserRoleEnum.DEVELOPER, new SlackNotificationAdapter());
+    let test1 = new User('3', 'Alice Johnson', 'alice.johnson@example.com', UserRoleEnum.TESTER, new EmailNotificationAdapter());
+    callACar.addMembers(scrumMaster, dev1, test1);
 
     let sprintOne = new Sprint(
         uuid(),
@@ -37,10 +39,10 @@ try {
     );
 
     let items = [
-        new BacklogItem(uuid(), 'User Story 1', 'As a user, I want to be able to log in.', 3).assignTo(
+        new BacklogItem(uuid(), 'User Story 1', 'As a user, I want to be able to log in.', 3, callACar).assignTo(
             dev1,
         ),
-        new BacklogItem(uuid(), 'User Story 2', 'As a user, I want to be able to log out.', 2),
+        new BacklogItem(uuid(), 'User Story 2', 'As a user, I want to be able to log out.', 2, callACar),
     ];
 
     items.forEach((item) => {

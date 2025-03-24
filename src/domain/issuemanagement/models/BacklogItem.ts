@@ -1,3 +1,4 @@
+import { Project } from '../../common/models/Project';
 import { User } from '../../common/models/User';
 import { IEvent } from '../../notifications/interfaces/IEvent';
 import { IObserver } from '../../notifications/interfaces/IObserver';
@@ -6,20 +7,23 @@ import { BacklogStatusChangedEvent } from '../../notifications/models/events/Bac
 import { BacklogItemStatusEnum } from '../enums/BacklogItemStatusEnum';
 import { Activity } from './Activity';
 import { Discussion } from './Discussion';
+import { Sprint } from './Sprint';
 
 export class BacklogItem implements ISubject<BacklogItem> {
     private readonly observers: IObserver<BacklogItem>[] = [];
     private assignee?: User;
     private status: BacklogItemStatusEnum = BacklogItemStatusEnum.TODO;
+    private sprint?: Sprint;
     constructor(
         private readonly id: string,
         private readonly title: string,
         private readonly description: string = '',
         private readonly storyPoints: number = 0,
+        private readonly project: Project,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
         //private readonly relatedBranches: Branch[] = [],
-    ) {}
+    ) { }
 
     addObserver(observer: IObserver<BacklogItem>): void {
         if (!this.observers.includes(observer)) {
@@ -99,6 +103,14 @@ export class BacklogItem implements ISubject<BacklogItem> {
         return this.storyPoints;
     }
 
+    getProject(): Project {
+        return this.project;
+    }
+
+    getSprint(): Sprint | undefined {
+        return this.sprint;
+    }
+
     getStatus(): BacklogItemStatusEnum {
         return this.status;
     }
@@ -113,5 +125,9 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     getDiscussions(): Discussion[] {
         return this.discussions;
+    }
+
+    setSprint(sprint: Sprint): void {
+        this.sprint = sprint;
     }
 }

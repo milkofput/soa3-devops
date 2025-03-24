@@ -1,3 +1,4 @@
+import { INotificationChannel } from '../../notifications/interfaces/INotificationChannel';
 import { UserRoleEnum } from '../enums/UserRoleEnum';
 
 export class User {
@@ -6,6 +7,7 @@ export class User {
         private readonly name: string,
         private readonly email: string,
         private role: UserRoleEnum,
+        private readonly preferredNotificationChannel: INotificationChannel
     ) { }
 
     hasRole(role: UserRoleEnum): boolean {
@@ -31,6 +33,10 @@ export class User {
 
     getRole(): string {
         return this.role;
+    }
+
+    getPreferredNotificationChannel(): INotificationChannel {
+        return this.preferredNotificationChannel;
     }
 
     toString(): string {

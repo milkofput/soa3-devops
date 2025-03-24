@@ -9,6 +9,6 @@ export class ReleaseSprintStrategy implements ISprintStrategy {
         //     throw new Error("Pipeline is required to release sprint");
         // }
         sprint.setState(new FinalizedSprintState(sprint));
-        console.log("Sprint is released");
+        console.log("🎯 Sprint is released");
     }
 }
