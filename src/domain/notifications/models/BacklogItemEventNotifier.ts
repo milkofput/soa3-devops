@@ -1,36 +1,40 @@
-import { BacklogItemStatusEnum } from '../../issuemanagement/enums/BacklogItemStatusEnum';
 import { BacklogItem } from '../../issuemanagement/models/BacklogItem';
 import { IObserver } from '../interfaces/IObserver';
+import { IEvent } from '../interfaces/IEvent';
+import { BacklogItemStatusEnum } from '../../issuemanagement/enums/BacklogItemStatusEnum';
+import { BacklogStatusChangedEvent } from './events/BacklogStatusChangedEvent';
 
 export class BacklogItemNotifier implements IObserver<BacklogItem> {
-    private previousStatus: BacklogItemStatusEnum | undefined;
-    update(data: BacklogItem): void {
-        const currentStatus = data.getStatus();
-        const previousStatus = this.previousStatus;
+    update(subject: BacklogItem, event?: IEvent): void {
+        if (event && event instanceof BacklogStatusChangedEvent) {
+            this.handleTestingNotification(subject, event);
+            this.handleRegressionAlert(subject, event);
+        }
+    }
 
-        // Case 1: Item moved to testing
-        if (currentStatus === BacklogItemStatusEnum.TESTING && previousStatus !== BacklogItemStatusEnum.TESTING) {
+    private handleTestingNotification(
+        subject: BacklogItem,
+        event: BacklogStatusChangedEvent,
+    ): void {
+        if (
+            event.newStatus === BacklogItemStatusEnum.TESTING &&
+            event.previousStatus !== BacklogItemStatusEnum.TESTING
+        ) {
             console.log('\n🧪 TESTING NOTIFICATION 🧪');
-            console.log(`Item "${data.getTitle()}" has been moved to Testing!`);
-            console.log(`Assigned to: ${data.getAssignee()?.getName() ?? 'Unassigned'}`);
+            console.log(`Item "${subject.getTitle()}" has been moved to Testing!`);
+            console.log(`Assigned to: ${subject.getAssignee()?.getName() ?? 'Unassigned'}`);
         }
+    }
 
-        // Case 2: Item regressed (moved to an earlier stage in the workflow)
-        if (!previousStatus) {
-            this.previousStatus = currentStatus;
-            return;
-        }
-
+    private handleRegressionAlert(subject: BacklogItem, event: BacklogStatusChangedEvent): void {
         const statusValues = Object.values(BacklogItemStatusEnum);
-        const currentIndex = statusValues.indexOf(currentStatus);
-        const previousIndex = statusValues.indexOf(previousStatus);
+        const currentIndex = statusValues.indexOf(event.newStatus);
+        const previousIndex = statusValues.indexOf(event.previousStatus);
 
         if (currentIndex < previousIndex) {
             console.log('\n⚠️ REGRESSION ALERT ⚠️');
-            console.log(`Item "${data.getTitle()}" has regressed!`);
-            console.log(`From: ${previousStatus} → To: ${currentStatus}`);
+            console.log(`Item "${subject.getTitle()}" has regressed!`);
+            console.log(`From: ${event.previousStatus} → To: ${event.newStatus}`);
         }
-
-        this.previousStatus = currentStatus;
     }
 }

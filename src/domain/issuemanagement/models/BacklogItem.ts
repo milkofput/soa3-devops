@@ -1,6 +1,8 @@
 import { User } from '../../common/models/User';
+import { IEvent } from '../../notifications/interfaces/IEvent';
 import { IObserver } from '../../notifications/interfaces/IObserver';
 import { ISubject } from '../../notifications/interfaces/ISubject';
+import { BacklogStatusChangedEvent } from '../../notifications/models/events/BacklogStatusChangedEvent';
 import { BacklogItemStatusEnum } from '../enums/BacklogItemStatusEnum';
 import { Activity } from './Activity';
 import { Discussion } from './Discussion';
@@ -12,12 +14,12 @@ export class BacklogItem implements ISubject<BacklogItem> {
     constructor(
         private readonly id: string,
         private readonly title: string,
-        private readonly description: string = "",
+        private readonly description: string = '',
         private readonly storyPoints: number = 0,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
         //private readonly relatedBranches: Branch[] = [],
-    ) { }
+    ) {}
 
     addObserver(observer: IObserver<BacklogItem>): void {
         if (!this.observers.includes(observer)) {
@@ -29,18 +31,19 @@ export class BacklogItem implements ISubject<BacklogItem> {
             this.observers.splice(this.observers.indexOf(observer), 1);
         }
     }
-    notifyObservers(): void {
+    notifyObservers(e?: IEvent): void {
         for (const observer of this.observers) {
-            observer.update(this);
+            observer.update(this, e);
         }
     }
 
     setStatus(status: BacklogItemStatusEnum): void {
+        const oldStatus = this.status;
         this.status = status;
-        this.notifyObservers();
+        this.notifyObservers(new BacklogStatusChangedEvent(this, oldStatus, this.status));
     }
 
-    assignTo(user: User): BacklogItem {
+    assignTo(user: User): this {
         this.assignee = user;
         return this;
     }
