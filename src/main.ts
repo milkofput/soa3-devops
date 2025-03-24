@@ -1,3 +1,6 @@
+import { IPipelineBuilder } from './domain/cicd/interface/IPipelineBuilder';
+import { ExecutionVisitor } from './domain/cicd/models/ExecutionVisitor';
+import { StandardPipelineBuilder } from './domain/cicd/models/StandardPipelineBuilder';
 import { UserRoleEnum } from './domain/common/enums/UserRoleEnum';
 import { ProductBacklog } from './domain/common/models/ProductBacklog';
 import { Project } from './domain/common/models/Project';
@@ -14,12 +17,12 @@ import { SlackNotificationAdapter } from './domain/notifications/models/SlackNot
 import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
 
 try {
-
     console.log('SOA3 Eindopdracht: Avans DevOps');
 
     const uuid = () => {
         return (
-            Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+            Math.random().toString(36).substring(2, 15) +
+            Math.random().toString(36).substring(2, 15)
         );
     };
 
@@ -35,7 +38,7 @@ try {
         new Date('2023-10-01'),
         new Date('2023-10-15'),
         scrumMaster,
-        new ReviewSprintStrategy()
+        new ReviewSprintStrategy(),
     );
 
     let items = [
@@ -85,14 +88,32 @@ try {
 
     items[0].setStatus(BacklogItemStatusEnum.TODO);
 
+    let pipelineBuilder: IPipelineBuilder = new StandardPipelineBuilder();
+
+    let pipeline = pipelineBuilder
+        .composite('Call-a-car release')
+        .composite('Build')
+        .command('npm build')
+        .end()
+        .composite('Test')
+        .command('npm audit')
+        .command('npm test')
+        .end()
+        .end()
+        .build();
+
+    let executionVisitor = new ExecutionVisitor();
+    pipeline.run(executionVisitor);
+
     sprintOne.finish();
 
     //sprintOne.finalize();
 
-    sprintOne.addReviewDocument(new ReviewDocument(uuid(), 'Review Document 1', scrumMaster, new Date()));
+    sprintOne.addReviewDocument(
+        new ReviewDocument(uuid(), 'Review Document 1', scrumMaster, new Date()),
+    );
 
     sprintOne.finalize();
-
 } catch (error) {
     console.error(error);
 }
