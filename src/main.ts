@@ -1,3 +1,6 @@
+import { IPipelineBuilder } from './domain/cicd/interface/IPipelineBuilder';
+import { ExecutionVisitor } from './domain/cicd/models/ExecutionVisitor';
+import { StandardPipelineBuilder } from './domain/cicd/models/StandardPipelineBuilder';
 import { UserRoleEnum } from './domain/common/enums/UserRoleEnum';
 import { ProductBacklog } from './domain/common/models/ProductBacklog';
 import { Project } from './domain/common/models/Project';
@@ -29,7 +32,7 @@ let sprintOne = new Sprint(
     new Date('2023-10-01'),
     new Date('2023-10-15'),
     scrumMaster,
-    new ReleaseSprintStrategy()
+    new ReleaseSprintStrategy(),
 );
 
 let items = [
@@ -66,7 +69,8 @@ function displaySprintDetails(sprint: Sprint, project: Project) {
         console.log(`   Status: ${item.getStatus()}`);
         console.log(`   Story Points: ${item.getStoryPoints()}`);
         console.log(
-            `   Assignee: ${item.getAssignee()?.getName() ?? 'Unassigned'} (${item.getAssignee()?.getRole() ?? 'N/A'
+            `   Assignee: ${item.getAssignee()?.getName() ?? 'Unassigned'} (${
+                item.getAssignee()?.getRole() ?? 'N/A'
             })`,
         );
     });
@@ -77,3 +81,20 @@ function displaySprintDetails(sprint: Sprint, project: Project) {
 items[0].setStatus(BacklogItemStatusEnum.TESTING);
 
 items[0].setStatus(BacklogItemStatusEnum.TODO);
+
+let pipelineBuilder: IPipelineBuilder = new StandardPipelineBuilder();
+
+let pipeline = pipelineBuilder
+    .composite('Call-a-car release')
+    .composite('Build')
+    .command('npm build')
+    .end()
+    .composite('Test')
+    .command('npm audit')
+    .command('npm test')
+    .end()
+    .end()
+    .build();
+
+let executionVisitor = new ExecutionVisitor();
+pipeline.run(executionVisitor);
