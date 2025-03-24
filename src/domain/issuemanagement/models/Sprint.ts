@@ -5,6 +5,7 @@ import { BacklogItem } from './BacklogItem';
 import { ReviewDocument } from './ReviewDocument';
 import { ISprintState } from '../interfaces/ISprintState';
 import { CreatedSprintState } from './sprintstates/CreatedSprintState';
+import { ISprintStrategy } from '../interfaces/ISprintStrategy';
 
 export class Sprint implements ISubject<Sprint> {
     private readonly reviewDocument?: ReviewDocument;
@@ -15,11 +16,11 @@ export class Sprint implements ISubject<Sprint> {
         private readonly name: string,
         private readonly startDate: Date,
         private readonly endDate: Date,
-        private state: ISprintState = new CreatedSprintState(this),
-        //private readonly strategy: SprintStrategy,
         private readonly scrumMaster: User,
+        private readonly strategy: ISprintStrategy,
+        private state: ISprintState = new CreatedSprintState(this),
         //private readonly releasePipeline: Pipeline,
-        private backlogItems: BacklogItem[] = []
+        private backlogItems: BacklogItem[] = [],
     ) { }
 
     addObserver(observer: IObserver<Sprint>): void {
@@ -54,11 +55,6 @@ export class Sprint implements ISubject<Sprint> {
     //     // generate report
     // }
 
-    public setStatusMessage(message: string): void {
-        this.statusMessage = message;
-        this.notifyObservers();
-    }
-
     public create(): void {
         this.state.create();
     }
@@ -71,16 +67,8 @@ export class Sprint implements ISubject<Sprint> {
         this.state.finish();
     }
 
-    public review(): void {
-        if (this.reviewDocument) {
-            this.state.review(this.reviewDocument);
-        } else {
-            throw new Error("Review document is not available.");
-        }
-    }
-
-    public release(): void {
-        this.state.release();
+    public finalize(): void {
+        this.state.finalize();
     }
 
     public cancel(): void {
@@ -112,7 +100,28 @@ export class Sprint implements ISubject<Sprint> {
         return this.scrumMaster;
     }
 
+    getStrategy(): ISprintStrategy {
+        return this.strategy;
+    }
+
+    getState(): ISprintState {
+        return this.state;
+    }
+
+    // getReleasePipeline(): any {
+    //     //return this.releasePipeline;
+    // }
+
     getBacklogItems(): BacklogItem[] {
         return this.backlogItems;
+    }
+
+    getDocument(): ReviewDocument {
+        if (this.reviewDocument) {
+            return this.reviewDocument;
+        }
+        else {
+            throw new Error("No review document available");
+        }
     }
 }

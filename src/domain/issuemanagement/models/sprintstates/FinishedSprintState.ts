@@ -16,12 +16,8 @@ export class FinishedSprintState implements ISprintState {
         console.log("Sprint is already finished");
     }
 
-    public review(): void {
-        // iets met template pattern doen
-    }
-
-    public release(): void {
-        // iets met template pattern doen
+    public finalize(): void {
+        this.sprint.getStrategy().sprintFinishStrategy(this.sprint);
     }
 
     public cancel(): void {

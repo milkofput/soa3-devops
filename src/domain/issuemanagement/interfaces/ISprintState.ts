@@ -4,7 +4,6 @@ export interface ISprintState {
     create(): void;
     start(): void;
     finish(): void;
-    review(reviewDocument: ReviewDocument): void;
-    release(): void;
+    finalize(): void;
     cancel(): void;
 }

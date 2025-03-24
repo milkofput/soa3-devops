@@ -40,8 +40,9 @@ export class BacklogItem implements ISubject<BacklogItem> {
         this.notifyObservers();
     }
 
-    assignTo(user: User): void {
+    assignTo(user: User): BacklogItem {
         this.assignee = user;
+        return this;
     }
 
     addActivity(activity: Activity): void {

@@ -16,10 +16,7 @@ export class ReleasedSprintState implements ISprintState {
         console.log("Sprint is already released");
     }
 
-    public review(): void {
-    }
-
-    public release(): void {
+    public finalize(): void {
     }
 
     public cancel(): void {

@@ -5,6 +5,7 @@ import { User } from './domain/common/models/User';
 import { BacklogItemStatusEnum } from './domain/issuemanagement/enums/BacklogItemStatusEnum';
 import { BacklogItem } from './domain/issuemanagement/models/BacklogItem';
 import { Sprint } from './domain/issuemanagement/models/Sprint';
+import { ReleaseSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReleaseSprintStrategy';
 import { BacklogItemNotifier } from './domain/notifications/models/BacklogItemEventNotifier';
 import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
 
@@ -28,6 +29,7 @@ let sprintOne = new Sprint(
     new Date('2023-10-01'),
     new Date('2023-10-15'),
     scrumMaster,
+    new ReleaseSprintStrategy()
 );
 
 let items = [

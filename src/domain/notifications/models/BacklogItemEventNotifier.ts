@@ -9,7 +9,7 @@ export class BacklogItemNotifier implements IObserver<BacklogItem> {
         const previousStatus = this.previousStatus;
 
         // Case 1: Item moved to testing
-        if (currentStatus === BacklogItemStatusEnum.TESTING) {
+        if (currentStatus === BacklogItemStatusEnum.TESTING && previousStatus !== BacklogItemStatusEnum.TESTING) {
             console.log('\n🧪 TESTING NOTIFICATION 🧪');
             console.log(`Item "${data.getTitle()}" has been moved to Testing!`);
             console.log(`Assigned to: ${data.getAssignee()?.getName() ?? 'Unassigned'}`);

@@ -11,18 +11,13 @@ export class CreatedSprintState implements ISprintState {
 
     public start(): void {
         this.sprint.setState(new StartedSprintState(this.sprint));
-        this.sprint.setStatusMessage("Sprint is started");
     }
 
     public finish(): void {
         console.log("Sprint is not started yet");
     }
 
-    public review(): void {
-        console.log("Sprint is not started yet");
-    }
-
-    public release(): void {
+    public finalize(): void {
         console.log("Sprint is not started yet");
     }
 

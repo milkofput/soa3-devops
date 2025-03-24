@@ -16,11 +16,7 @@ export class CancelledSprintState implements ISprintState {
         console.log("Sprint is already cancelled");
     }
 
-    public review(): void {
-        console.log("Sprint is already cancelled");
-    }
-
-    public release(): void {
+    public finalize(): void {
         console.log("Sprint is already cancelled");
     }
 

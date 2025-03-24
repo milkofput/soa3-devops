@@ -15,14 +15,9 @@ export class StartedSprintState implements ISprintState {
 
     public finish(): void {
         this.sprint.setState(new FinishedSprintState(this.sprint));
-        this.sprint.setStatusMessage("Sprint is finished");
     }
 
-    public review(): void {
-        console.log("Sprint is not finished yet");
-    }
-
-    public release(): void {
+    public finalize(): void {
         console.log("Sprint is not finished yet");
     }
 
