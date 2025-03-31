@@ -1,13 +1,13 @@
-import { Sprint } from "../Sprint";
-import { ISprintState } from "../../interfaces/ISprintState";
-import { StartedSprintState } from "./StartedSprintState";
-import { CancelledSprintState } from "./CancelledSprintState";
+import { Sprint } from '../Sprint';
+import { ISprintState } from '../../interfaces/ISprintState';
+import { StartedSprintState } from './StartedSprintState';
+import { CancelledSprintState } from './CancelledSprintState';
 
 export class CreatedSprintState implements ISprintState {
-    constructor(private readonly sprint: Sprint) { }
+    constructor(private readonly sprint: Sprint) {}
 
     public create(): void {
-        console.log(`🚫 ${this.sprint.getName()} already created`);
+        throw new Error(`🚫 ${this.sprint.getName()} already created`);
     }
 
     public start(): void {
@@ -17,11 +17,11 @@ export class CreatedSprintState implements ISprintState {
     }
 
     public finish(): void {
-        console.log(`\n🚫 ${this.sprint.getName()} not started yet`);
+        throw new Error(`\n🚫 ${this.sprint.getName()} not started yet`);
     }
 
     public finalize(): void {
-        console.log(`\n🚫 ${this.sprint.getName()} not started yet`);
+        throw new Error(`\n🚫 ${this.sprint.getName()} not started yet`);
     }
 
     public cancel(): void {
