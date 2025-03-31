@@ -13,8 +13,8 @@ import { Sprint } from './domain/issuemanagement/models/Sprint';
 import { ReleaseSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReleaseSprintStrategy';
 import { ReviewSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReviewSprintStrategy';
 import { BacklogItemNotifier } from './domain/notifications/models/BacklogItemEventNotifier';
-import { EmailNotificationAdapter } from './domain/notifications/models/EmailNotificationAdapter';
-import { SlackNotificationAdapter } from './domain/notifications/models/SlackNotificationAdapter';
+import { EmailNotificationAdapter } from './infrastructure/notifications/EmailNotificationAdapter';
+import { SlackNotificationAdapter } from './infrastructure/notifications/SlackNotificationAdapter';
 import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
 
 try {
@@ -27,11 +27,35 @@ try {
         );
     };
 
-    let productOwner = new User('0', 'Jane Doe', 'jane.doe@example.com', UserRoleEnum.PRODUCTOWNER, new EmailNotificationAdapter());
+    let productOwner = new User(
+        '0',
+        'Jane Doe',
+        'jane.doe@example.com',
+        UserRoleEnum.PRODUCTOWNER,
+        new EmailNotificationAdapter(),
+    );
     let callACar = new Project(uuid(), 'Call a Car', new ProductBacklog(uuid()), productOwner);
-    let scrumMaster = new User('1', 'John Doe', 'john.doe@example.com', UserRoleEnum.SCRUMMASTER, new SlackNotificationAdapter());
-    let dev1 = new User('2', 'Jane Smith', 'jane.smith@example.com', UserRoleEnum.DEVELOPER, new SlackNotificationAdapter());
-    let test1 = new User('3', 'Alice Johnson', 'alice.johnson@example.com', UserRoleEnum.TESTER, new EmailNotificationAdapter());
+    let scrumMaster = new User(
+        '1',
+        'John Doe',
+        'john.doe@example.com',
+        UserRoleEnum.SCRUMMASTER,
+        new SlackNotificationAdapter(),
+    );
+    let dev1 = new User(
+        '2',
+        'Jane Smith',
+        'jane.smith@example.com',
+        UserRoleEnum.DEVELOPER,
+        new SlackNotificationAdapter(),
+    );
+    let test1 = new User(
+        '3',
+        'Alice Johnson',
+        'alice.johnson@example.com',
+        UserRoleEnum.TESTER,
+        new EmailNotificationAdapter(),
+    );
     callACar.addMembers(scrumMaster, dev1, test1);
 
     let pipelineBuilder: IPipelineBuilder = new StandardPipelineBuilder();
@@ -59,10 +83,20 @@ try {
     );
 
     let releaseSprintItems = [
-        new BacklogItem(uuid(), 'User Story 1', 'As a user, I want to be able to log in.', 3, callACar).assignTo(
-            dev1,
+        new BacklogItem(
+            uuid(),
+            'User Story 1',
+            'As a user, I want to be able to log in.',
+            3,
+            callACar,
+        ).assignTo(dev1),
+        new BacklogItem(
+            uuid(),
+            'User Story 2',
+            'As a user, I want to be able to log out.',
+            2,
+            callACar,
         ),
-        new BacklogItem(uuid(), 'User Story 2', 'As a user, I want to be able to log out.', 2, callACar),
     ];
 
     releaseSprintItems.forEach((item) => {
@@ -97,8 +131,20 @@ try {
     );
 
     let reviewSprintItems = [
-        new BacklogItem(uuid(), 'User Story 3', 'As a user, I want to be able to register.', 5, callACar),
-        new BacklogItem(uuid(), 'User Story 4', 'As a user, I want to be able to book a car.', 8, callACar),
+        new BacklogItem(
+            uuid(),
+            'User Story 3',
+            'As a user, I want to be able to register.',
+            5,
+            callACar,
+        ),
+        new BacklogItem(
+            uuid(),
+            'User Story 4',
+            'As a user, I want to be able to book a car.',
+            8,
+            callACar,
+        ),
     ];
 
     reviewSprintItems.forEach((item) => {
@@ -108,7 +154,6 @@ try {
     reviewSprint.addBacklogItems(...reviewSprintItems);
     callACar.addSprint(reviewSprint);
     reviewSprint.start();
-
 
     reviewSprintItems[0].setStatus(BacklogItemStatusEnum.TESTING);
     reviewSprintItems[0].setStatus(BacklogItemStatusEnum.TODO);
@@ -131,12 +176,24 @@ try {
         new Date('2023-10-31'),
         new Date('2023-11-15'),
         scrumMaster,
-        new ReleaseSprintStrategy(new FailingExecutionVisitor(["npm build"])),
+        new ReleaseSprintStrategy(new FailingExecutionVisitor(['npm build'])),
     );
 
     let failReleaseSprintItems = [
-        new BacklogItem(uuid(), 'User Story 5', 'As a user, I want to be able to view my booking.', 3, callACar),
-        new BacklogItem(uuid(), 'User Story 6', 'As a user, I want to be able to cancel my booking.', 2, callACar),
+        new BacklogItem(
+            uuid(),
+            'User Story 5',
+            'As a user, I want to be able to view my booking.',
+            3,
+            callACar,
+        ),
+        new BacklogItem(
+            uuid(),
+            'User Story 6',
+            'As a user, I want to be able to cancel my booking.',
+            2,
+            callACar,
+        ),
     ];
 
     failReleaseSprintItems.forEach((item) => {
@@ -154,8 +211,6 @@ try {
     failReleaseSprint.setPipeline(pipeline);
 
     failReleaseSprint.finalize();
-
-
 } catch (error) {
     console.error(error);
 }
