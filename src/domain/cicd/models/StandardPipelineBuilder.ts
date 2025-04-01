@@ -20,18 +20,20 @@ export class StandardPipelineBuilder implements IPipelineBuilder {
         return this;
     }
 
+    // CC = 4
     composite(groupStr: string): this {
+        let newPipelineStep = new CompositePipelineStep(groupStr);
         if (!this.root) {
             this.pointerStack = new Stack<CompositePipelineStep>();
-            let newPipelineStep = new CompositePipelineStep(groupStr);
             this.pointerStack.push(newPipelineStep);
             this.root = newPipelineStep;
-        } else if (this.pointerStack?.peek()) {
-            let newPipelineStep = new CompositePipelineStep(groupStr);
-            this.pointerStack?.peek()?.addChildrenPipelineStep(newPipelineStep);
+        } else if (this.pointerStack) {
+            const parentStep = this.pointerStack.peek();
+            if (parentStep) {
+                parentStep.addChildrenPipelineStep(newPipelineStep);
+            }
             this.pointerStack.push(newPipelineStep);
         }
-
         return this;
     }
 

@@ -13,6 +13,7 @@ export class BacklogItemNotifier implements IObserver<BacklogItem> {
         }
     }
 
+    // CC = 5 
     private handleTestingNotification(subject: BacklogItem, event: BacklogStatusChangedEvent): void {
         if (
             event.newStatus === BacklogItemStatusEnum.TESTING &&

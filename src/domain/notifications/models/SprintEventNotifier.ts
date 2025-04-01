@@ -14,6 +14,7 @@ export class SprintEventNotifier implements IObserver<Sprint> {
         }
     }
 
+    // CC = 6
     private handlePipelineNotification(sprint: Sprint, event: PipelineOutcomeEvent): void {
 
         const pipeline = sprint.getReleasePipeline();
