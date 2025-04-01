@@ -15,6 +15,8 @@ import { BacklogItemNotifier } from './domain/notifications/models/BacklogItemEv
 import { EmailNotificationAdapter } from './infrastructure/notifications/EmailNotificationAdapter';
 import { SlackNotificationAdapter } from './infrastructure/notifications/SlackNotificationAdapter';
 import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
+import { Activity } from './domain/issuemanagement/models/Activity';
+import { ActivityStatusEnum } from './domain/issuemanagement/enums/ActivityStatusEnum';
 
 try {
     console.log('SOA3 Eindopdracht: Avans DevOps');
@@ -165,17 +167,53 @@ try {
         item.addObserver(new BacklogItemNotifier());
     });
 
+    let failReleaseSprintActivities = [
+        new Activity(
+            uuid(),
+            'Activity 1',
+            dev1,
+            ActivityStatusEnum.TODO
+        ),
+        new Activity(
+            uuid(),
+            'Activity 2',
+            test1,
+            ActivityStatusEnum.TODO
+        ),
+    ];
+
     failReleaseSprint.addBacklogItems(...failReleaseSprintItems);
+    failReleaseSprintItems[0].addActivity(failReleaseSprintActivities[0]);
+    failReleaseSprintItems[0].addActivity(failReleaseSprintActivities[1]);
+
     callACar.addSprint(failReleaseSprint);
     failReleaseSprint.start();
 
+    // fail because items not started yet
+    try {
+        failReleaseSprintItems[0].beginTesting();
+    } catch (error) {
+        console.error(error);
+    }
+    failReleaseSprintItems[0].startDevelopment();
+    failReleaseSprintActivities[0].setStatus(ActivityStatusEnum.DOING);
+    failReleaseSprintItems[0].markReadyForTesting();
     failReleaseSprintItems[0].beginTesting();
     failReleaseSprintItems[0].completeTesting();
+    failReleaseSprintActivities[0].setStatus(ActivityStatusEnum.DONE);
+    // fail because second activity is not done
+    try {
+        failReleaseSprintItems[0].markAsDone();
+    }
+    catch (error) {
+        console.error(error);
+    }
+    failReleaseSprintActivities[1].setStatus(ActivityStatusEnum.DONE);
+    failReleaseSprintItems[0].markAsDone();
 
     failReleaseSprint.finish();
-
     failReleaseSprint.setPipeline(pipeline);
-
+    // fail because pipeline fails
     try {
         failReleaseSprint.finalize();
     } catch (error) {
@@ -217,18 +255,19 @@ try {
     reviewSprint.addBacklogItems(...reviewSprintItems);
     callACar.addSprint(reviewSprint);
     reviewSprint.start();
-
-    reviewSprintItems[0].beginTesting();
-    reviewSprintItems[0].completeTesting();
-
     reviewSprint.finish();
 
-    //releaseSprint.finalize();
+    // fail because no document added yet
+    try {
+        reviewSprint.finalize();
+    }
+    catch (error) {
+        console.error(error);
+    }
 
     reviewSprint.addReviewDocument(
         new ReviewDocument(uuid(), 'Review Document 1', scrumMaster, new Date()),
     );
-
     reviewSprint.finalize();
 
 } catch (error) {

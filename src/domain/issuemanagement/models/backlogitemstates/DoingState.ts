@@ -1,3 +1,4 @@
+import { BacklogStatusChangedEvent } from "../../../notifications/models/events/BacklogStatusChangedEvent";
 import { IBacklogItemState } from "../../interfaces/IBacklogItemState";
 import { BacklogItem } from "../BacklogItem";
 import { ReadyForTestingState } from "./ReadyForTestingState";
@@ -16,6 +17,7 @@ export class DoingState implements IBacklogItemState {
     public markReadyForTesting(): void {
         this.backlogItem.changeState(new ReadyForTestingState(this.backlogItem));
         console.log(`\n✅ Backlog Item: ${this.backlogItem.getTitle()} is ready for testing`);
+        this.backlogItem.notifyObservers(new BacklogStatusChangedEvent(this.backlogItem, new ReadyForTestingState(this.backlogItem)));
     }
 
     public beginTesting(): void {

@@ -16,9 +16,7 @@ export class BacklogItemNotifier implements IObserver<BacklogItem> {
 
     // CC = 5 
     private handleTestingNotification(subject: BacklogItem, event: BacklogStatusChangedEvent): void {
-        if (
-            event.state === ReadyForTestingState
-        ) {
+        if (event.state instanceof ReadyForTestingState) {
             console.log('\n🧪 SENDING TESTING NOTIFICATIONS 🧪');
             const message = `Item "${subject.getTitle()}" has been moved to Testing!`;
             subject.getProject().getMembers().forEach((member) => {
@@ -30,7 +28,7 @@ export class BacklogItemNotifier implements IObserver<BacklogItem> {
     }
 
     private handleRegressionAlert(subject: BacklogItem, event: BacklogStatusChangedEvent): void {
-        if (event.state === TodoState) {
+        if (event.state instanceof TodoState) {
             console.log('\n⚠️  SENDING REGRESSION NOTIFICATIONS ⚠️');
             const message = `Item "${subject.getTitle()}" has been moved to todo!`;
             const scrumMaster = subject.getSprint()?.getScrumMaster();

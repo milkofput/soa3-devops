@@ -69,7 +69,6 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     public moveToBacklog(): void {
         this.state.moveToBacklog();
-        this.notifyObservers(new BacklogStatusChangedEvent(this, this.state));
     }
 
     public startDevelopment(): void {
@@ -78,7 +77,6 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     public markReadyForTesting(): void {
         this.state.markReadyForTesting();
-        this.notifyObservers(new BacklogStatusChangedEvent(this, this.state));
     }
 
     public beginTesting(): void {

@@ -1,3 +1,4 @@
+import { BacklogStatusChangedEvent } from "../../../notifications/models/events/BacklogStatusChangedEvent";
 import { IBacklogItemState } from "../../interfaces/IBacklogItemState";
 import { BacklogItem } from "../BacklogItem";
 import { TestedState } from "./TestedState";
@@ -9,6 +10,7 @@ export class TestingState implements IBacklogItemState {
     public moveToBacklog(): void {
         this.backlogItem.changeState(new TodoState(this.backlogItem));
         console.log(`\n✅ ${this.backlogItem.getTitle()} moved to backlog`);
+        this.backlogItem.notifyObservers(new BacklogStatusChangedEvent(this.backlogItem, new TodoState(this.backlogItem)));
     }
 
     public startDevelopment(): void {
