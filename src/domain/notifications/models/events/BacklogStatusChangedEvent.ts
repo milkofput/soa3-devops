@@ -1,5 +1,4 @@
-import { User } from '../../../common/models/User';
-import { BacklogItemStatusEnum } from '../../../issuemanagement/enums/BacklogItemStatusEnum';
+import { IBacklogItemState } from '../../../issuemanagement/interfaces/IBacklogItemState';
 import { BacklogItem } from '../../../issuemanagement/models/BacklogItem';
 import { IEvent } from '../../interfaces/IEvent';
 
@@ -9,7 +8,6 @@ export class BacklogStatusChangedEvent implements IEvent {
 
     constructor(
         public readonly backlogItem: BacklogItem,
-        public readonly previousStatus: BacklogItemStatusEnum,
-        public readonly newStatus: BacklogItemStatusEnum,
-    ) {}
+        public readonly state: IBacklogItemState
+    ) { }
 }

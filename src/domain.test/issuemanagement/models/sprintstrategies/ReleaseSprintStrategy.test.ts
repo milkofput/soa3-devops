@@ -18,7 +18,7 @@ tap.test('ReleaseSprintStrategy', (t) => {
             getName: sinon.stub().returns('Test Sprint'),
             runPipeline: sinon.stub(),
             getReleasePipeline: sinon.stub(),
-            setState: sinon.stub(),
+            changeState: sinon.stub(),
         };
         visitorMock = {};
         releaseStrategy = new ReleaseSprintStrategy(visitorMock);
@@ -41,7 +41,7 @@ tap.test('ReleaseSprintStrategy', (t) => {
                 'Should run the pipeline with the visitor',
             );
             t.ok(
-                sprintMock.setState.calledWithMatch(
+                sprintMock.changeState.calledWithMatch(
                     (state: any) => state instanceof FinalizedSprintState,
                 ),
                 'Should transition to FinalizedSprintState',
@@ -64,7 +64,7 @@ tap.test('ReleaseSprintStrategy', (t) => {
             'Should run the pipeline with the visitor',
         );
         t.notOk(
-            sprintMock.setState.called,
+            sprintMock.changeState.called,
             'Should not transition to FinalizedSprintState if pipeline fails',
         );
         t.end();
@@ -84,7 +84,7 @@ tap.test('ReleaseSprintStrategy', (t) => {
             'Should run the pipeline with the visitor',
         );
         t.notOk(
-            sprintMock.setState.called,
+            sprintMock.changeState.called,
             'Should not transition to FinalizedSprintState if release pipeline is null',
         );
         t.end();

@@ -3,11 +3,7 @@ import { Sprint } from '../Sprint';
 import { CancelledSprintState } from './CancelledSprintState';
 
 export class FinishedSprintState implements ISprintState {
-    constructor(private readonly sprint: Sprint) {}
-
-    public create(): void {
-        throw new Error(`\n🚫 ${this.sprint.getName()} already finished`);
-    }
+    constructor(private readonly sprint: Sprint) { }
 
     public start(): void {
         throw new Error(`\n🚫 ${this.sprint.getName()} already finished`);
@@ -22,7 +18,7 @@ export class FinishedSprintState implements ISprintState {
     }
 
     public cancel(): void {
-        this.sprint.setState(new CancelledSprintState(this.sprint));
+        this.sprint.changeState(new CancelledSprintState(this.sprint));
         console.log(`\n🗑️ ${this.sprint.getName()} cancelled`);
     }
 }

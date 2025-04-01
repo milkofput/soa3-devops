@@ -15,10 +15,10 @@ tap.test('StartedSprintState', (t) => {
             new Date(),
             new Date(Date.now() + 86400000),
             { getName: () => 'Scrum Master' } as any,
-            { sprintFinishStrategy: () => {} } as any,
+            { sprintFinishStrategy: () => { } } as any,
         );
         startedState = new StartedSprintState(sprint);
-        sprint.setState(startedState);
+        sprint.changeState(startedState);
     });
 
     t.test('create() should throw an error that the sprint is already started', (t) => {

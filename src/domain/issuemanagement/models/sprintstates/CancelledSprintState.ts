@@ -2,11 +2,7 @@ import { ISprintState } from '../../interfaces/ISprintState';
 import { Sprint } from '../Sprint';
 
 export class CancelledSprintState implements ISprintState {
-    constructor(private readonly sprint: Sprint) {}
-
-    public create(): void {
-        throw new Error(`\n🚫 ${this.sprint.getName()} already cancelled`);
-    }
+    constructor(private readonly sprint: Sprint) { }
 
     public start(): void {
         throw new Error(`\n🚫 ${this.sprint.getName()} already cancelled`);

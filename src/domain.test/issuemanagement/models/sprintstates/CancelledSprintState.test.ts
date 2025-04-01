@@ -13,10 +13,10 @@ tap.test('CancelledSprintState', (t) => {
             new Date(),
             new Date(Date.now() + 86400000),
             { getName: () => 'Scrum Master' } as any,
-            { sprintFinishStrategy: () => {} } as any,
+            { sprintFinishStrategy: () => { } } as any,
         );
         cancelledState = new CancelledSprintState(sprint);
-        sprint.setState(cancelledState);
+        sprint.changeState(cancelledState);
     });
 
     t.test('create() should throw an error that the sprint is already cancelled', (t) => {

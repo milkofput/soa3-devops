@@ -30,7 +30,7 @@ tap.test('FinishedSprintState', (t) => {
             mockFinishStrategy,
         );
         finishedState = new FinishedSprintState(sprint);
-        sprint.setState(finishedState);
+        sprint.changeState(finishedState);
     });
 
     t.test('create() should throw an error that the sprint is already finished', (t) => {

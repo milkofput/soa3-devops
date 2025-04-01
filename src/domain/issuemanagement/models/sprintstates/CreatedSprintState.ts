@@ -4,14 +4,10 @@ import { StartedSprintState } from './StartedSprintState';
 import { CancelledSprintState } from './CancelledSprintState';
 
 export class CreatedSprintState implements ISprintState {
-    constructor(private readonly sprint: Sprint) {}
-
-    public create(): void {
-        throw new Error(`🚫 ${this.sprint.getName()} already created`);
-    }
+    constructor(private readonly sprint: Sprint) { }
 
     public start(): void {
-        this.sprint.setState(new StartedSprintState(this.sprint));
+        this.sprint.changeState(new StartedSprintState(this.sprint));
         console.log(`\n=============================================`);
         console.log(`\n🚀 ${this.sprint.getName()} is started`);
     }
@@ -25,7 +21,7 @@ export class CreatedSprintState implements ISprintState {
     }
 
     public cancel(): void {
-        this.sprint.setState(new CancelledSprintState(this.sprint));
+        this.sprint.changeState(new CancelledSprintState(this.sprint));
         console.log(`\n🗑️ ${this.sprint.getName()} cancelled`);
     }
 }

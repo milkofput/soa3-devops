@@ -12,7 +12,7 @@ tap.test('ReviewSprintStrategy', (t) => {
         sprintMock = {
             getName: sinon.stub().returns('Test Sprint'),
             getDocument: sinon.stub(),
-            setState: sinon.stub(),
+            changeState: sinon.stub(),
         };
         reviewStrategy = new ReviewSprintStrategy();
     });
@@ -27,7 +27,7 @@ tap.test('ReviewSprintStrategy', (t) => {
         reviewStrategy.sprintFinishStrategy(sprintMock);
 
         t.ok(
-            sprintMock.setState.calledWithMatch(
+            sprintMock.changeState.calledWithMatch(
                 (state: ISprintState) => state instanceof FinalizedSprintState,
             ),
             'Should transition to FinalizedSprintState',
@@ -44,7 +44,7 @@ tap.test('ReviewSprintStrategy', (t) => {
             'Should throw an error indicating a document is required',
         );
         t.notOk(
-            sprintMock.setState.called,
+            sprintMock.changeState.called,
             'Should not transition to FinalizedSprintState if no document is present',
         );
         t.end();

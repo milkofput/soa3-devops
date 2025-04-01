@@ -15,10 +15,10 @@ tap.test('CreatedSprintState', (t) => {
             new Date(),
             new Date(Date.now() + 86400000),
             { getName: () => 'Scrum Master' } as any, // Mock User
-            { sprintFinishStrategy: () => {} } as any, // Mock ISprintStrategy
+            { sprintFinishStrategy: () => { } } as any, // Mock ISprintStrategy
         );
         createdState = new CreatedSprintState(sprint);
-        sprint.setState(createdState);
+        sprint.changeState(createdState);
     });
 
     t.test('create() should throw an error that the sprint is already created', (t) => {

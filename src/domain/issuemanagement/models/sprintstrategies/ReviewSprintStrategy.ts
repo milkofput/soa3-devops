@@ -7,7 +7,7 @@ export class ReviewSprintStrategy implements ISprintStrategy {
         if (!sprint.getDocument()) {
             throw new Error(`\n📝 Document is required to review sprint`);
         }
-        sprint.setState(new FinalizedSprintState(sprint));
+        sprint.changeState(new FinalizedSprintState(sprint));
         console.log(`\n🎯 ${sprint.getName()} reviewed`);
     }
 }

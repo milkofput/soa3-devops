@@ -4,15 +4,15 @@ import { IEvent } from '../../notifications/interfaces/IEvent';
 import { IObserver } from '../../notifications/interfaces/IObserver';
 import { ISubject } from '../../notifications/interfaces/ISubject';
 import { BacklogStatusChangedEvent } from '../../notifications/models/events/BacklogStatusChangedEvent';
-import { BacklogItemStatusEnum } from '../enums/BacklogItemStatusEnum';
+import { IBacklogItemState } from '../interfaces/IBacklogItemState';
 import { Activity } from './Activity';
+import { TodoState } from './backlogitemstates/TodoState';
 import { Discussion } from './Discussion';
 import { Sprint } from './Sprint';
 
 export class BacklogItem implements ISubject<BacklogItem> {
     private readonly observers: IObserver<BacklogItem>[] = [];
     private assignee?: User;
-    private status: BacklogItemStatusEnum = BacklogItemStatusEnum.TODO;
     private sprint?: Sprint;
     constructor(
         private readonly id: string,
@@ -22,6 +22,7 @@ export class BacklogItem implements ISubject<BacklogItem> {
         private readonly project: Project,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
+        private state: IBacklogItemState = new TodoState(this),
         //private readonly relatedBranches: Branch[] = [],
     ) { }
 
@@ -41,11 +42,11 @@ export class BacklogItem implements ISubject<BacklogItem> {
         }
     }
 
-    setStatus(status: BacklogItemStatusEnum): void {
-        const oldStatus = this.status;
-        this.status = status;
-        this.notifyObservers(new BacklogStatusChangedEvent(this, oldStatus, this.status));
-    }
+    // setStatus(status: BacklogItemStatusEnum): void {
+    //     const oldStatus = this.status;
+    //     this.status = status;
+    //     this.notifyObservers(new BacklogStatusChangedEvent(this, oldStatus, this.status));
+    // }
 
     assignTo(user: User): this {
         this.assignee = user;
@@ -66,24 +67,34 @@ export class BacklogItem implements ISubject<BacklogItem> {
     //     return this;
     // }
 
-    isInProgress(): void {
-        this.status === BacklogItemStatusEnum.DOING;
+    public moveToBacklog(): void {
+        this.state.moveToBacklog();
+        this.notifyObservers(new BacklogStatusChangedEvent(this, this.state));
     }
 
-    isReady(): void {
-        this.status === BacklogItemStatusEnum.READY_FOR_TESTING;
+    public startDevelopment(): void {
+        this.state.startDevelopment();
     }
 
-    isInTesting(): void {
-        this.status === BacklogItemStatusEnum.TESTING;
+    public markReadyForTesting(): void {
+        this.state.markReadyForTesting();
+        this.notifyObservers(new BacklogStatusChangedEvent(this, this.state));
     }
 
-    isTested(): void {
-        this.status === BacklogItemStatusEnum.TESTED;
+    public beginTesting(): void {
+        this.state.beginTesting();
     }
 
-    isDone(): void {
-        this.status === BacklogItemStatusEnum.DONE;
+    public completeTesting(): void {
+        this.state.completeTesting();
+    }
+
+    public markAsDone(): void {
+        this.state.markAsDone();
+    }
+
+    public changeState(state: IBacklogItemState): void {
+        this.state = state;
     }
 
     // getters
@@ -109,10 +120,6 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     getSprint(): Sprint | undefined {
         return this.sprint;
-    }
-
-    getStatus(): BacklogItemStatusEnum {
-        return this.status;
     }
 
     getAssignee(): User | undefined {

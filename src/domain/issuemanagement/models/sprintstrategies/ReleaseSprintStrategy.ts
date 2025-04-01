@@ -7,7 +7,7 @@ import { FinalizedSprintState } from '../sprintstates/FinalizedSprintState';
 import { FinishedSprintState } from '../sprintstates/FinishedSprintState';
 
 export class ReleaseSprintStrategy implements ISprintStrategy {
-    constructor(private readonly visitor: IPipelineVisitor) {}
+    constructor(private readonly visitor: IPipelineVisitor) { }
 
     public sprintFinishStrategy(sprint: Sprint): void {
         sprint.runPipeline(this.visitor);
@@ -18,7 +18,7 @@ export class ReleaseSprintStrategy implements ISprintStrategy {
         if (releasePipeline.getStatus() === PipelineStatusEnum.FAILED) {
             throw new Error(`\n🚫 Pipeline failed, sprint is not released`);
         }
-        sprint.setState(new FinalizedSprintState(sprint));
+        sprint.changeState(new FinalizedSprintState(sprint));
         console.log(`\n🎯 ${sprint.getName()} released`);
     }
 }

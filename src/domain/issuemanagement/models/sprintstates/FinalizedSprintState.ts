@@ -2,11 +2,7 @@ import { ISprintState } from '../../interfaces/ISprintState';
 import { Sprint } from '../Sprint';
 
 export class FinalizedSprintState implements ISprintState {
-    constructor(private readonly sprint: Sprint) {}
-
-    public create(): void {
-        throw new Error(`\n🚫 ${this.sprint.getName()} already finalized`);
-    }
+    constructor(private readonly sprint: Sprint) { }
 
     public start(): void {
         throw new Error(`\n🚫 ${this.sprint.getName()} already finalized`);

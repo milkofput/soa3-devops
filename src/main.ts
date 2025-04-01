@@ -6,7 +6,6 @@ import { UserRoleEnum } from './domain/common/enums/UserRoleEnum';
 import { ProductBacklog } from './domain/common/models/ProductBacklog';
 import { Project } from './domain/common/models/Project';
 import { User } from './domain/common/models/User';
-import { BacklogItemStatusEnum } from './domain/issuemanagement/enums/BacklogItemStatusEnum';
 import { BacklogItem } from './domain/issuemanagement/models/BacklogItem';
 import { ReviewDocument } from './domain/issuemanagement/models/ReviewDocument';
 import { Sprint } from './domain/issuemanagement/models/Sprint';
@@ -56,6 +55,7 @@ try {
         UserRoleEnum.TESTER,
         new EmailNotificationAdapter(),
     );
+
     callACar.addMembers(scrumMaster, dev1, test1);
 
     let pipelineBuilder: IPipelineBuilder = new StandardPipelineBuilder();
@@ -73,6 +73,7 @@ try {
         .build();
 
     // ------------------------------ release sprint ------------------------------
+
     let releaseSprint = new Sprint(
         uuid(),
         'Sprint 1',
@@ -110,8 +111,21 @@ try {
     callACar.addSprint(releaseSprint);
     releaseSprint.start();
 
-    releaseSprintItems[0].setStatus(BacklogItemStatusEnum.TESTING);
-    releaseSprintItems[0].setStatus(BacklogItemStatusEnum.TODO);
+    releaseSprintItems[0].startDevelopment();
+    releaseSprintItems[0].markReadyForTesting();
+    releaseSprintItems[0].beginTesting();
+    releaseSprintItems[0].completeTesting();
+    releaseSprintItems[0].markAsDone();
+
+    releaseSprintItems[1].startDevelopment();
+    releaseSprintItems[1].markReadyForTesting();
+    releaseSprintItems[1].beginTesting();
+    releaseSprintItems[1].moveToBacklog();
+    releaseSprintItems[1].startDevelopment();
+    releaseSprintItems[1].markReadyForTesting();
+    releaseSprintItems[1].beginTesting();
+    releaseSprintItems[1].completeTesting();
+    releaseSprintItems[1].markAsDone();
 
     releaseSprint.setPipeline(pipeline);
 
@@ -119,60 +133,11 @@ try {
 
     releaseSprint.finalize();
 
-    // ------------------------------ review sprint ------------------------------
-
-    let reviewSprint = new Sprint(
-        uuid(),
-        'Sprint 2',
-        new Date('2023-10-16'),
-        new Date('2023-10-30'),
-        scrumMaster,
-        new ReviewSprintStrategy(),
-    );
-
-    let reviewSprintItems = [
-        new BacklogItem(
-            uuid(),
-            'User Story 3',
-            'As a user, I want to be able to register.',
-            5,
-            callACar,
-        ),
-        new BacklogItem(
-            uuid(),
-            'User Story 4',
-            'As a user, I want to be able to book a car.',
-            8,
-            callACar,
-        ),
-    ];
-
-    reviewSprintItems.forEach((item) => {
-        item.addObserver(new BacklogItemNotifier());
-    });
-
-    reviewSprint.addBacklogItems(...reviewSprintItems);
-    callACar.addSprint(reviewSprint);
-    reviewSprint.start();
-
-    reviewSprintItems[0].setStatus(BacklogItemStatusEnum.TESTING);
-    reviewSprintItems[0].setStatus(BacklogItemStatusEnum.TODO);
-
-    reviewSprint.finish();
-
-    //releaseSprint.finalize();
-
-    reviewSprint.addReviewDocument(
-        new ReviewDocument(uuid(), 'Review Document 1', scrumMaster, new Date()),
-    );
-
-    reviewSprint.finalize();
-
     // ------------------------------ failing release sprint ------------------------------
 
     let failReleaseSprint = new Sprint(
         uuid(),
-        'Sprint 3',
+        'Sprint 2',
         new Date('2023-10-31'),
         new Date('2023-11-15'),
         scrumMaster,
@@ -204,13 +169,68 @@ try {
     callACar.addSprint(failReleaseSprint);
     failReleaseSprint.start();
 
-    failReleaseSprintItems[0].setStatus(BacklogItemStatusEnum.TESTING);
+    failReleaseSprintItems[0].beginTesting();
+    failReleaseSprintItems[0].completeTesting();
 
     failReleaseSprint.finish();
 
     failReleaseSprint.setPipeline(pipeline);
 
-    failReleaseSprint.finalize();
+    try {
+        failReleaseSprint.finalize();
+    } catch (error) {
+        console.error(error);
+    }
+
+    // ------------------------------ review sprint ------------------------------
+
+    let reviewSprint = new Sprint(
+        uuid(),
+        'Sprint 3',
+        new Date('2023-10-16'),
+        new Date('2023-10-30'),
+        scrumMaster,
+        new ReviewSprintStrategy(),
+    );
+
+    let reviewSprintItems = [
+        new BacklogItem(
+            uuid(),
+            'User Story 3',
+            'As a user, I want to be able to register.',
+            5,
+            callACar,
+        ),
+        new BacklogItem(
+            uuid(),
+            'User Story 4',
+            'As a user, I want to be able to book a car.',
+            8,
+            callACar,
+        ),
+    ];
+
+    reviewSprintItems.forEach((item) => {
+        item.addObserver(new BacklogItemNotifier());
+    });
+
+    reviewSprint.addBacklogItems(...reviewSprintItems);
+    callACar.addSprint(reviewSprint);
+    reviewSprint.start();
+
+    reviewSprintItems[0].beginTesting();
+    reviewSprintItems[0].completeTesting();
+
+    reviewSprint.finish();
+
+    //releaseSprint.finalize();
+
+    reviewSprint.addReviewDocument(
+        new ReviewDocument(uuid(), 'Review Document 1', scrumMaster, new Date()),
+    );
+
+    reviewSprint.finalize();
+
 } catch (error) {
     console.error(error);
 }

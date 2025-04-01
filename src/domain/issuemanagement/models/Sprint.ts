@@ -70,10 +70,6 @@ export class Sprint implements ISubject<Sprint> {
     //     // generate report
     // }
 
-    public create(): void {
-        this.state.create();
-    }
-
     public start(): void {
         this.state.start();
     }
@@ -90,7 +86,7 @@ export class Sprint implements ISubject<Sprint> {
         this.state.cancel();
     }
 
-    public setState(state: ISprintState): void {
+    public changeState(state: ISprintState): void {
         this.state = state;
     }
 
