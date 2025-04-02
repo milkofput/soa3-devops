@@ -1,11 +1,10 @@
-import tap from 'tap';
 import sinon from 'sinon';
 import { SprintEventNotifier } from '../../../domain/notifications/models/SprintEventNotifier';
 import { PipelineOutcomeEvent } from '../../../domain/notifications/models/events/PipelineOutcomeEvent';
 import { PipelineStatusEnum } from '../../../domain/cicd/enums/PipelineStatusEnum';
 import { INotificationChannel } from '../../../domain/notifications/interfaces/INotificationChannel';
 
-tap.test('SprintEventNotifier', (t) => {
+describe('SprintEventNotifier', () => {
     let scrumMasterNotificationChannel: sinon.SinonStubbedInstance<INotificationChannel>;
     let productOwnerNotificationChannel: sinon.SinonStubbedInstance<INotificationChannel>;
 
@@ -17,7 +16,7 @@ tap.test('SprintEventNotifier', (t) => {
     let sprint: any;
     let notifier: SprintEventNotifier;
 
-    t.beforeEach(() => {
+    beforeEach(() => {
         // Create stub notification channels
         scrumMasterNotificationChannel = { sendNotification: sinon.stub() };
         productOwnerNotificationChannel = { sendNotification: sinon.stub() };
@@ -64,18 +63,18 @@ tap.test('SprintEventNotifier', (t) => {
         notifier = new SprintEventNotifier();
     });
 
-    t.afterEach(() => {
+    afterEach(() => {
         sinon.restore();
     });
 
-    t.test('handlePipelineNotification', (t) => {
-        t.afterEach(() => {
+    describe('handlePipelineNotification', () => {
+        beforeEach(() => {
             // Reset stubs between tests
             scrumMasterNotificationChannel.sendNotification.reset();
             productOwnerNotificationChannel.sendNotification.reset();
         });
 
-        t.test('Path 1: No pipeline', (t) => {
+        test('Path 1: No pipeline', () => {
             // Set up sprint with no pipeline
             const noPipelineSprint = {
                 ...sprint,
@@ -86,38 +85,22 @@ tap.test('SprintEventNotifier', (t) => {
 
             notifier.update(noPipelineSprint, event);
 
-            t.notOk(
-                scrumMasterNotificationChannel.sendNotification.called,
-                'Should not send notification to scrum master when sprint has no pipeline',
-            );
-            t.notOk(
-                productOwnerNotificationChannel.sendNotification.called,
-                'Should not send notification to product owner when sprint has no pipeline',
-            );
-
-            t.end();
+            expect(scrumMasterNotificationChannel.sendNotification.called).toBeFalsy();
+            expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
-        t.test('Path 2: Not failed OR succeeded', (t) => {
+        test('Path 2: Not failed OR succeeded', () => {
             pipeline.getStatus.returns(PipelineStatusEnum.RUNNING);
 
             const event = new PipelineOutcomeEvent(sprint);
 
             notifier.update(sprint, event);
 
-            t.notOk(
-                scrumMasterNotificationChannel.sendNotification.called,
-                'Should not send notification to scrum master when pipeline status is neither FAILED nor SUCCEEDED',
-            );
-            t.notOk(
-                productOwnerNotificationChannel.sendNotification.called,
-                'Should not send notification to product owner when pipeline status is neither FAILED nor SUCCEEDED',
-            );
-
-            t.end();
+            expect(scrumMasterNotificationChannel.sendNotification.called).toBeFalsy();
+            expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
-        t.test('Path 3: Pipeline failed', (t) => {
+        test('Path 3: Pipeline failed', () => {
             // Set pipeline status to FAILED
             pipeline.getStatus.returns(PipelineStatusEnum.FAILED);
 
@@ -126,29 +109,19 @@ tap.test('SprintEventNotifier', (t) => {
             notifier.update(sprint, event);
 
             // Verify scrum master was notified
-            t.ok(
-                scrumMasterNotificationChannel.sendNotification.called,
-                'Should send notification to scrum master when pipeline fails',
-            );
+            expect(scrumMasterNotificationChannel.sendNotification.called).toBeTruthy();
 
             // Verify notification message content
             const call = scrumMasterNotificationChannel.sendNotification.getCall(0);
-            t.match(
-                call.args[1],
+            expect(call.args[1]).toMatch(
                 /Pipeline 'Release Pipeline' for sprint 'Sprint 1' has failed!/,
-                'Notification message should contain pipeline name and sprint name',
             );
 
             // Verify product owner was not notified
-            t.notOk(
-                productOwnerNotificationChannel.sendNotification.called,
-                'Should not send notification to product owner when pipeline fails',
-            );
-
-            t.end();
+            expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
-        t.test('Path 4: Pipeline succeeded but no product owner', (t) => {
+        test('Path 4: Pipeline succeeded but no product owner', () => {
             // Set pipeline status to SUCCEEDED
             pipeline.getStatus.returns(PipelineStatusEnum.SUCCEEDED);
 
@@ -175,21 +148,13 @@ tap.test('SprintEventNotifier', (t) => {
             notifier.update(noProductOwnerSprint, event);
 
             // Verify scrum master was notified
-            t.ok(
-                scrumMasterNotificationChannel.sendNotification.called,
-                'Should send notification to scrum master when pipeline succeeds',
-            );
+            expect(scrumMasterNotificationChannel.sendNotification.called).toBeTruthy();
 
             // Verify product owner was NOT notified
-            t.notOk(
-                productOwnerNotificationChannel.sendNotification.called,
-                'Should not send notification to product owner when project has no product owner',
-            );
-
-            t.end();
+            expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
-        t.test('Path 5: Pipeline succeeded with product owner', (t) => {
+        test('Path 5: Pipeline succeeded with product owner', () => {
             // Set pipeline status to SUCCEEDED
             pipeline.getStatus.returns(PipelineStatusEnum.SUCCEEDED);
 
@@ -198,37 +163,21 @@ tap.test('SprintEventNotifier', (t) => {
             notifier.update(sprint, event);
 
             // Verify scrum master was notified
-            t.ok(
-                scrumMasterNotificationChannel.sendNotification.called,
-                'Should send notification to scrum master when pipeline succeeds',
-            );
+            expect(scrumMasterNotificationChannel.sendNotification.called).toBeTruthy();
 
             // Verify product owner was notified
-            t.ok(
-                productOwnerNotificationChannel.sendNotification.called,
-                'Should send notification to product owner when pipeline succeeds',
-            );
+            expect(productOwnerNotificationChannel.sendNotification.called).toBeTruthy();
 
             // Verify notification message content
             const scrumMasterCall = scrumMasterNotificationChannel.sendNotification.getCall(0);
-            t.match(
-                scrumMasterCall.args[1],
+            expect(scrumMasterCall.args[1]).toMatch(
                 /Pipeline 'Release Pipeline' for sprint 'Sprint 1' has succeeded!/,
-                'Notification message to scrum master should contain pipeline name and sprint name',
             );
 
             const productOwnerCall = productOwnerNotificationChannel.sendNotification.getCall(0);
-            t.match(
-                productOwnerCall.args[1],
+            expect(productOwnerCall.args[1]).toMatch(
                 /Pipeline 'Release Pipeline' for sprint 'Sprint 1' has succeeded!/,
-                'Notification message to product owner should contain pipeline name and sprint name',
             );
-
-            t.end();
         });
-
-        t.end();
     });
-
-    t.end();
 });
