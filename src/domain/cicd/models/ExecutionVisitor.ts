@@ -1,6 +1,6 @@
 // src/domain/cicd/models/ExecutionVisitor.ts
-import { IPipelineVisitor } from '../interface/IPipelineVisitor';
-import { IPipelineStep } from '../interface/IPipelineStep';
+import { IPipelineVisitor } from '../interfaces/IPipelineVisitor';
+import { IPipelineStep } from '../interfaces/IPipelineStep';
 import { CommandPipelineStep } from './CommandPipelineStep';
 import { CompositePipelineStep } from './CompositePipelineStep';
 

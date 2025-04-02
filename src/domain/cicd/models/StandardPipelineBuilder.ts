@@ -1,5 +1,5 @@
-import { IPipelineBuilder } from '../interface/IPipelineBuilder';
-import { IPipelineStep } from '../interface/IPipelineStep';
+import { IPipelineBuilder } from '../interfaces/IPipelineBuilder';
+import { IPipelineStep } from '../interfaces/IPipelineStep';
 import { Stack } from '../utils/Stack';
 import { CommandPipelineStep } from './CommandPipelineStep';
 import { CompositePipelineStep } from './CompositePipelineStep';

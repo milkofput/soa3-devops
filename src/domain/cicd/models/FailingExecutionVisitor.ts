@@ -1,5 +1,5 @@
-import { IPipelineVisitor } from '../interface/IPipelineVisitor';
-import { IPipelineStep } from '../interface/IPipelineStep';
+import { IPipelineVisitor } from '../interfaces/IPipelineVisitor';
+import { IPipelineStep } from '../interfaces/IPipelineStep';
 import { CommandPipelineStep } from './CommandPipelineStep';
 import { CompositePipelineStep } from './CompositePipelineStep';
 
@@ -18,7 +18,7 @@ export class FailingExecutionVisitor implements IPipelineVisitor {
         const command = step.getCommand();
         console.log(`🔧 Executing command: ${command}`);
 
-        if (this.failOnCommands.some(failCommand => command.includes(failCommand))) {
+        if (this.failOnCommands.some((failCommand) => command.includes(failCommand))) {
             throw new Error(`Command failed: ${command}`);
         }
     }

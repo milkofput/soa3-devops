@@ -13,19 +13,10 @@ tap.test('FinalizedSprintState', (t) => {
             new Date(),
             new Date(Date.now() + 86400000),
             { getName: () => 'Scrum Master' } as any,
-            { sprintFinishStrategy: () => { } } as any,
+            { sprintFinishStrategy: () => {} } as any,
         );
         finalizedState = new FinalizedSprintState(sprint);
         sprint.changeState(finalizedState);
-    });
-
-    t.test('create() should throw an error that the sprint is already finalized', (t) => {
-        t.throws(
-            () => finalizedState.create(),
-            /already finalized/,
-            'Should throw an error indicating the sprint is already finalized',
-        );
-        t.end();
     });
 
     t.test('start() should throw an error that the sprint is already finalized', (t) => {

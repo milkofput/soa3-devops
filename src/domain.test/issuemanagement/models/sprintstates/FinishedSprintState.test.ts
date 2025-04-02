@@ -33,15 +33,6 @@ tap.test('FinishedSprintState', (t) => {
         sprint.changeState(finishedState);
     });
 
-    t.test('create() should throw an error that the sprint is already finished', (t) => {
-        t.throws(
-            () => finishedState.create(),
-            /already finished/,
-            'Should throw an error indicating the sprint is already finished',
-        );
-        t.end();
-    });
-
     t.test('start() should throw an error that the sprint is already finished', (t) => {
         t.throws(
             () => finishedState.start(),

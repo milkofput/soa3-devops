@@ -1,5 +1,5 @@
-import { IPipelineStep } from '../interface/IPipelineStep';
-import { IPipelineVisitor } from '../interface/IPipelineVisitor';
+import { IPipelineStep } from '../interfaces/IPipelineStep';
+import { IPipelineVisitor } from '../interfaces/IPipelineVisitor';
 
 export class CompositePipelineStep implements IPipelineStep {
     constructor(

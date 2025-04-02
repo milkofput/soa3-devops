@@ -1,6 +1,6 @@
 import { PipelineStatusEnum } from '../enums/PipelineStatusEnum';
-import { IPipelineStep } from '../interface/IPipelineStep';
-import { IPipelineVisitor } from '../interface/IPipelineVisitor';
+import { IPipelineStep } from '../interfaces/IPipelineStep';
+import { IPipelineVisitor } from '../interfaces/IPipelineVisitor';
 
 export class Pipeline {
     private status: PipelineStatusEnum;
@@ -23,7 +23,9 @@ export class Pipeline {
             this.status = PipelineStatusEnum.SUCCEEDED;
             return true;
         } catch (error) {
-            console.error(`❌ Pipeline failed: ${error instanceof Error ? error.message : String(error)}`);
+            console.error(
+                `❌ Pipeline failed: ${error instanceof Error ? error.message : String(error)}`,
+            );
             this.status = PipelineStatusEnum.FAILED;
             return false;
         }

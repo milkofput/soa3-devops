@@ -8,14 +8,15 @@ import { CreatedSprintState } from './sprintstates/CreatedSprintState';
 import { ISprintStrategy } from '../interfaces/ISprintStrategy';
 import { Pipeline } from '../../cicd/models/Pipeline';
 import { ExecutionVisitor } from '../../cicd/models/ExecutionVisitor';
-import { IPipelineVisitor } from '../../cicd/interface/IPipelineVisitor';
+import { IPipelineVisitor } from '../../cicd/interfaces/IPipelineVisitor';
 import { IEvent } from '../../notifications/interfaces/IEvent';
 import { PipelineOutcomeEvent } from '../../notifications/models/events/PipelineOutcomeEvent';
+import { SprintReportTemplate } from '../../reports/models/SprintReportTemplate';
 
 export class Sprint implements ISubject<Sprint> {
     private reviewDocument?: ReviewDocument;
     private readonly observers: IObserver<Sprint>[] = [];
-    private statusMessage: string = "";
+    private statusMessage: string = '';
     constructor(
         private readonly id: string,
         private readonly name: string,
@@ -26,7 +27,7 @@ export class Sprint implements ISubject<Sprint> {
         private releasePipeline?: Pipeline,
         private state: ISprintState = new CreatedSprintState(this),
         private backlogItems: BacklogItem[] = [],
-    ) { }
+    ) {}
 
     addObserver(observer: IObserver<Sprint>): void {
         if (!this.observers.includes(observer)) {
@@ -66,9 +67,9 @@ export class Sprint implements ISubject<Sprint> {
         }
     }
 
-    // generateReport(): void {
-    //     // generate report
-    // }
+    public generateReport(report: SprintReportTemplate, withHeaderAndFooter: boolean = true): void {
+        report.generateReport(withHeaderAndFooter);
+    }
 
     public start(): void {
         this.state.start();
@@ -88,6 +89,13 @@ export class Sprint implements ISubject<Sprint> {
 
     public changeState(state: ISprintState): void {
         this.state = state;
+    }
+
+    getTeamMembers(): User[] {
+        if (this.backlogItems.length > 0) {
+            return this.backlogItems[0].getProject().getMembers();
+        }
+        return [];
     }
 
     // getters

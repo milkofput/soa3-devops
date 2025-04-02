@@ -1,4 +1,4 @@
-import { IPipelineBuilder } from './domain/cicd/interface/IPipelineBuilder';
+import { IPipelineBuilder } from './domain/cicd/interfaces/IPipelineBuilder';
 import { ExecutionVisitor } from './domain/cicd/models/ExecutionVisitor';
 import { FailingExecutionVisitor } from './domain/cicd/models/FailingExecutionVisitor';
 import { StandardPipelineBuilder } from './domain/cicd/models/StandardPipelineBuilder';
@@ -11,12 +11,14 @@ import { ReviewDocument } from './domain/issuemanagement/models/ReviewDocument';
 import { Sprint } from './domain/issuemanagement/models/Sprint';
 import { ReleaseSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReleaseSprintStrategy';
 import { ReviewSprintStrategy } from './domain/issuemanagement/models/sprintstrategies/ReviewSprintStrategy';
-import { BacklogItemNotifier } from './domain/notifications/models/BacklogItemEventNotifier';
+import { BacklogItemEventNotifier } from './domain/notifications/models/BacklogItemEventNotifier';
 import { EmailNotificationAdapter } from './infrastructure/notifications/EmailNotificationAdapter';
 import { SlackNotificationAdapter } from './infrastructure/notifications/SlackNotificationAdapter';
 import { SprintEventNotifier } from './domain/notifications/models/SprintEventNotifier';
 import { Activity } from './domain/issuemanagement/models/Activity';
 import { ActivityStatusEnum } from './domain/issuemanagement/enums/ActivityStatusEnum';
+import { BurndownChartReport } from './domain/reports/models/BurndownChartReport';
+import { PDFExportStrategy } from './domain/reports/models/PDFExportStrategy';
 
 try {
     console.log('SOA3 Eindopdracht: Avans DevOps');
@@ -103,7 +105,7 @@ try {
     ];
 
     releaseSprintItems.forEach((item) => {
-        item.addObserver(new BacklogItemNotifier());
+        item.addObserver(new BacklogItemEventNotifier());
     });
 
     let sprintEventNotifier = new SprintEventNotifier();
@@ -135,6 +137,11 @@ try {
 
     releaseSprint.finalize();
 
+    releaseSprint.generateReport(
+        new BurndownChartReport(releaseSprint, new PDFExportStrategy()),
+        true,
+    );
+
     // ------------------------------ failing release sprint ------------------------------
 
     let failReleaseSprint = new Sprint(
@@ -164,22 +171,12 @@ try {
     ];
 
     failReleaseSprintItems.forEach((item) => {
-        item.addObserver(new BacklogItemNotifier());
+        item.addObserver(new BacklogItemEventNotifier());
     });
 
     let failReleaseSprintActivities = [
-        new Activity(
-            uuid(),
-            'Activity 1',
-            dev1,
-            ActivityStatusEnum.TODO
-        ),
-        new Activity(
-            uuid(),
-            'Activity 2',
-            test1,
-            ActivityStatusEnum.TODO
-        ),
+        new Activity(uuid(), 'Activity 1', dev1, ActivityStatusEnum.TODO),
+        new Activity(uuid(), 'Activity 2', test1, ActivityStatusEnum.TODO),
     ];
 
     failReleaseSprint.addBacklogItems(...failReleaseSprintItems);
@@ -204,8 +201,7 @@ try {
     // fail because second activity is not done
     try {
         failReleaseSprintItems[0].markAsDone();
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
     }
     failReleaseSprintActivities[1].setStatus(ActivityStatusEnum.DONE);
@@ -249,7 +245,7 @@ try {
     ];
 
     reviewSprintItems.forEach((item) => {
-        item.addObserver(new BacklogItemNotifier());
+        item.addObserver(new BacklogItemEventNotifier());
     });
 
     reviewSprint.addBacklogItems(...reviewSprintItems);
@@ -260,8 +256,7 @@ try {
     // fail because no document added yet
     try {
         reviewSprint.finalize();
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
     }
 
@@ -269,7 +264,6 @@ try {
         new ReviewDocument(uuid(), 'Review Document 1', scrumMaster, new Date()),
     );
     reviewSprint.finalize();
-
 } catch (error) {
     console.error(error);
 }
