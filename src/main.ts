@@ -233,7 +233,7 @@ try {
         new BacklogItem(
             uuid(),
             'User Story 5',
-            'As a user, I want to be able to view my booking.',
+            'As a user, I want to view my booking.',
             3,
             callACar,
         ),
