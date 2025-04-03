@@ -56,4 +56,12 @@ export class StandardPipelineBuilder implements IPipelineBuilder {
             this.root,
         );
     }
+
+    getRoot(): IPipelineStep | undefined {
+        return this.root;
+    }
+
+    getPointerStack(): Stack<CompositePipelineStep> | undefined {
+        return this.pointerStack;
+    }
 }

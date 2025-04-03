@@ -27,7 +27,7 @@ export class Sprint implements ISubject<Sprint> {
         private releasePipeline?: Pipeline,
         private state: ISprintState = new CreatedSprintState(this),
         private backlogItems: BacklogItem[] = [],
-    ) {}
+    ) { }
 
     addObserver(observer: IObserver<Sprint>): void {
         if (!this.observers.includes(observer)) {
@@ -126,10 +126,6 @@ export class Sprint implements ISubject<Sprint> {
     getState(): ISprintState {
         return this.state;
     }
-
-    // getReleasePipeline(): any {
-    //     //return this.releasePipeline;
-    // }
 
     getBacklogItems(): BacklogItem[] {
         return this.backlogItems;

@@ -1,8 +1,8 @@
-import { BacklogStatusChangedEvent } from "../../../notifications/models/events/BacklogStatusChangedEvent";
-import { IBacklogItemState } from "../../interfaces/IBacklogItemState";
-import { BacklogItem } from "../BacklogItem";
-import { TestedState } from "./TestedState";
-import { TodoState } from "./TodoState";
+import { BacklogStatusChangedEvent } from '../../../notifications/models/events/BacklogStatusChangedEvent';
+import { IBacklogItemState } from '../../interfaces/IBacklogItemState';
+import { BacklogItem } from '../BacklogItem';
+import { TestedState } from './TestedState';
+import { TodoState } from './TodoState';
 
 export class TestingState implements IBacklogItemState {
     constructor(private readonly backlogItem: BacklogItem) { }
@@ -10,7 +10,9 @@ export class TestingState implements IBacklogItemState {
     public moveToBacklog(): void {
         this.backlogItem.changeState(new TodoState(this.backlogItem));
         console.log(`\n✅ ${this.backlogItem.getTitle()} moved to backlog`);
-        this.backlogItem.notifyObservers(new BacklogStatusChangedEvent(this.backlogItem, new TodoState(this.backlogItem)));
+        this.backlogItem.notifyObservers(
+            new BacklogStatusChangedEvent(this.backlogItem, new TodoState(this.backlogItem)),
+        );
     }
 
     public startDevelopment(): void {
@@ -33,5 +35,4 @@ export class TestingState implements IBacklogItemState {
     public markAsDone(): void {
         throw new Error(`🚫 ${this.backlogItem.getTitle()} testing has not completed`);
     }
-
 }
