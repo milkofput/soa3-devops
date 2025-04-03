@@ -23,7 +23,6 @@ export class BacklogItem implements ISubject<BacklogItem> {
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
         private state: IBacklogItemState = new TodoState(this),
-        //private readonly relatedBranches: Branch[] = [],
     ) {}
 
     addObserver(observer: IObserver<BacklogItem>): void {
@@ -42,12 +41,6 @@ export class BacklogItem implements ISubject<BacklogItem> {
         }
     }
 
-    // setStatus(status: BacklogItemStatusEnum): void {
-    //     const oldStatus = this.status;
-    //     this.status = status;
-    //     this.notifyObservers(new BacklogStatusChangedEvent(this, oldStatus, this.status));
-    // }
-
     assignTo(user: User): this {
         this.assignee = user;
         return this;
@@ -59,13 +52,7 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     addDiscussion(discussion: Discussion): void {
         this.discussions.push(discussion);
-        // this.notifyObservers();
     }
-
-    // linkBranch(branch: string): BacklogItem {
-    //     //this.relatedBranches.push(branch);
-    //     return this;
-    // }
 
     public moveToBacklog(): void {
         this.state.moveToBacklog();

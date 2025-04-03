@@ -7,6 +7,7 @@ module.exports = {
         '!src/**/*.test.ts',
         '!src/**/*..spec.ts',
         '!**/node_modules/**',
+        '!src/infrastructure/**',
     ],
     testMatch: ['**/*.jest.test.ts', '**/*.jest.spec.ts'],
     coverageDirectory: 'coverage',

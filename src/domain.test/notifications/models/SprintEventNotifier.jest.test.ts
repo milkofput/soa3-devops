@@ -17,11 +17,9 @@ describe('SprintEventNotifier', () => {
     let notifier: SprintEventNotifier;
 
     beforeEach(() => {
-        // Create stub notification channels
         scrumMasterNotificationChannel = { sendNotification: sinon.stub() };
         productOwnerNotificationChannel = { sendNotification: sinon.stub() };
 
-        // Create users
         scrumMaster = {
             getName: sinon.stub().returns('Scrum Master'),
             getPreferredNotificationChannel: sinon.stub().returns(scrumMasterNotificationChannel),
@@ -32,26 +30,22 @@ describe('SprintEventNotifier', () => {
             getPreferredNotificationChannel: sinon.stub().returns(productOwnerNotificationChannel),
         };
 
-        // Create project
         project = {
             getName: sinon.stub().returns('Test Project'),
             getProductOwner: sinon.stub().returns(productOwner),
         };
 
-        // Create backlog item
         backlogItem = {
             getTitle: sinon.stub().returns('Test Backlog Item'),
             getId: sinon.stub().returns('BLI-123'),
             getProject: sinon.stub().returns(project),
         };
 
-        // Create pipeline with default status
         pipeline = {
             getName: sinon.stub().returns('Release Pipeline'),
             getStatus: sinon.stub().returns(PipelineStatusEnum.SUCCEEDED),
         };
 
-        // Create sprint
         sprint = {
             getName: sinon.stub().returns('Sprint 1'),
             getScrumMaster: sinon.stub().returns(scrumMaster),
@@ -59,7 +53,6 @@ describe('SprintEventNotifier', () => {
             getReleasePipeline: sinon.stub().returns(pipeline),
         };
 
-        // Create notifier
         notifier = new SprintEventNotifier();
     });
 
@@ -69,13 +62,11 @@ describe('SprintEventNotifier', () => {
 
     describe('handlePipelineNotification', () => {
         beforeEach(() => {
-            // Reset stubs between tests
             scrumMasterNotificationChannel.sendNotification.reset();
             productOwnerNotificationChannel.sendNotification.reset();
         });
 
         test('Path 1: No pipeline', () => {
-            // Set up sprint with no pipeline
             const noPipelineSprint = {
                 ...sprint,
                 getReleasePipeline: sinon.stub().returns(null),
@@ -101,43 +92,35 @@ describe('SprintEventNotifier', () => {
         });
 
         test('Path 3: Pipeline failed', () => {
-            // Set pipeline status to FAILED
             pipeline.getStatus.returns(PipelineStatusEnum.FAILED);
 
             const event = new PipelineOutcomeEvent(sprint);
 
             notifier.update(sprint, event);
 
-            // Verify scrum master was notified
             expect(scrumMasterNotificationChannel.sendNotification.called).toBeTruthy();
 
-            // Verify notification message content
             const call = scrumMasterNotificationChannel.sendNotification.getCall(0);
             expect(call.args[1]).toMatch(
                 /Pipeline 'Release Pipeline' for sprint 'Sprint 1' has failed!/,
             );
 
-            // Verify product owner was not notified
             expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
         test('Path 4: Pipeline succeeded but no product owner', () => {
-            // Set pipeline status to SUCCEEDED
             pipeline.getStatus.returns(PipelineStatusEnum.SUCCEEDED);
 
-            // Create project with no product owner
             const noProductOwnerProject = {
                 ...project,
                 getProductOwner: sinon.stub().returns(null),
             };
 
-            // Create backlog item with project that has no product owner
             const noProductOwnerBacklogItem = {
                 ...backlogItem,
                 getProject: sinon.stub().returns(noProductOwnerProject),
             };
 
-            // Create sprint with backlog item that has no product owner
             const noProductOwnerSprint = {
                 ...sprint,
                 getBacklogItems: sinon.stub().returns([noProductOwnerBacklogItem]),
@@ -147,28 +130,22 @@ describe('SprintEventNotifier', () => {
 
             notifier.update(noProductOwnerSprint, event);
 
-            // Verify scrum master was notified
             expect(scrumMasterNotificationChannel.sendNotification.called).toBeTruthy();
 
-            // Verify product owner was NOT notified
             expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
         test('Path 5: Pipeline succeeded with product owner', () => {
-            // Set pipeline status to SUCCEEDED
             pipeline.getStatus.returns(PipelineStatusEnum.SUCCEEDED);
 
             const event = new PipelineOutcomeEvent(sprint);
 
             notifier.update(sprint, event);
 
-            // Verify scrum master was notified
             expect(scrumMasterNotificationChannel.sendNotification.called).toBeTruthy();
 
-            // Verify product owner was notified
             expect(productOwnerNotificationChannel.sendNotification.called).toBeTruthy();
 
-            // Verify notification message content
             const scrumMasterCall = scrumMasterNotificationChannel.sendNotification.getCall(0);
             expect(scrumMasterCall.args[1]).toMatch(
                 /Pipeline 'Release Pipeline' for sprint 'Sprint 1' has succeeded!/,

@@ -19,13 +19,14 @@ import { Activity } from './domain/issuemanagement/models/Activity';
 import { ActivityStatusEnum } from './domain/issuemanagement/enums/ActivityStatusEnum';
 import { BurndownChartReport } from './domain/reports/models/BurndownChartReport';
 import { PDFExportStrategy } from './domain/reports/models/PDFExportStrategy';
-import { IReleasePipelineBuilder } from './domain/cicd/interfaces/IReleasePipelineBuilder';
 import { ReleasePipelineBuilder } from './domain/cicd/models/ReleasePipelineBuilder';
 import { Pipeline } from './domain/cicd/models/Pipeline';
 import { randomUUID } from 'crypto';
 import { Message } from './domain/issuemanagement/models/Message';
 import { Discussion } from './domain/issuemanagement/models/Discussion';
 import { DiscussionEventNotifier } from './domain/notifications/models/DiscussionEventNotifier';
+
+/* istanbul ignore file */
 
 try {
     console.log('SOA3 Eindopdracht: Avans DevOps');

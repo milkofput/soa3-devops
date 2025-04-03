@@ -3,6 +3,8 @@ import { IPipelineStep } from '../interfaces/IPipelineStep';
 import { CommandPipelineStep } from './CommandPipelineStep';
 import { CompositePipelineStep } from './CompositePipelineStep';
 
+/* istanbul ignore file */
+
 export class FailingExecutionVisitor implements IPipelineVisitor {
     private failOnCommands: string[];
 
