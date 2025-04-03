@@ -3,16 +3,12 @@ import { IPipelineStep } from '../interfaces/IPipelineStep';
 import { IPipelineVisitor } from '../interfaces/IPipelineVisitor';
 
 export class Pipeline {
-    private status: PipelineStatusEnum;
-
     constructor(
         private readonly name: string,
-        status: PipelineStatusEnum,
+        private status: PipelineStatusEnum,
         lastRun: Date,
         private readonly rootPipelineStep: IPipelineStep,
-    ) {
-        this.status = status;
-    }
+    ) {}
 
     public run(visitor: IPipelineVisitor): boolean {
         console.log('\n🚧 Running pipe', this.name);
@@ -23,9 +19,7 @@ export class Pipeline {
             this.status = PipelineStatusEnum.SUCCEEDED;
             return true;
         } catch (error) {
-            console.error(
-                `❌ Pipeline failed: ${error instanceof Error ? error.message : String(error)}`,
-            );
+            console.error(`❌ Pipeline failed: ${error}`);
             this.status = PipelineStatusEnum.FAILED;
             return false;
         }

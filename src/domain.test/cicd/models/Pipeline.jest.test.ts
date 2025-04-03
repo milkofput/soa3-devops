@@ -25,29 +25,23 @@ describe('Pipeline', () => {
 
     describe('run', () => {
         test('Path 1: should successfully execute pipeline and update status', () => {
-            // Arrange
             mockVisitor.visit.mockImplementation(() => {});
 
-            // Act
             const result = pipeline.run(mockVisitor);
 
-            // Assert
             expect(result).toBe(true);
             expect(mockVisitor.visit).toHaveBeenCalledWith(mockStep);
             expect(pipeline.getStatus()).toBe(PipelineStatusEnum.SUCCEEDED);
         });
 
         test('Path 2: should handle pipeline execution failure and update status', () => {
-            // Arrange
             const error = new Error('Pipeline step failed');
             mockVisitor.visit.mockImplementation(() => {
                 throw error;
             });
 
-            // Act
             const result = pipeline.run(mockVisitor);
 
-            // Assert
             expect(result).toBe(false);
             expect(mockVisitor.visit).toHaveBeenCalledWith(mockStep);
             expect(pipeline.getStatus()).toBe(PipelineStatusEnum.FAILED);
