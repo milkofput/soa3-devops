@@ -5,7 +5,7 @@ import { INotificationChannel } from '../../domain/notifications/interfaces/INot
 export class EmailNotificationAdapter implements INotificationChannel {
     private emailNotificationLibrary = new EmailNotificationLibrary();
 
-    public sendNotification(user: User, message: String): void {
+    public sendNotification(user: User, message: string): void {
         this.emailNotificationLibrary.sendEmail(
             user.getName(),
             user.getEmail(),
