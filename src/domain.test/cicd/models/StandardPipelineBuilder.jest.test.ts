@@ -1,9 +1,35 @@
+import { CommandPipelineStep } from '../../../domain/cicd/models/CommandPipelineStep';
 import { CompositePipelineStep } from '../../../domain/cicd/models/CompositePipelineStep';
 import { Pipeline } from '../../../domain/cicd/models/Pipeline';
 import { StandardPipelineBuilder } from '../../../domain/cicd/models/StandardPipelineBuilder';
 import { Stack } from '../../../domain/cicd/utils/Stack';
 
 describe('StandardPipelineBuilder', () => {
+    describe('(UT-F12-1) SCM commands can be run in pipeline', () => {
+        test('should be able to add and execute SCM commands in pipeline', () => {
+            const builder = new StandardPipelineBuilder();
+
+            builder
+                .composite('Source Control')
+                .command('git clone https://github.com/user/repo.git')
+                .command('svn checkout https://svn.example.com/repo')
+                .end()
+                .build();
+
+            const root = builder.getRoot() as CompositePipelineStep;
+            expect(root.getGroupName()).toBe('Source Control');
+
+            const children = root.getChildrenPipelineSteps();
+            expect(children).toHaveLength(2);
+            expect((children[0] as CommandPipelineStep).getCommand()).toBe(
+                'git clone https://github.com/user/repo.git',
+            );
+            expect((children[1] as CommandPipelineStep).getCommand()).toBe(
+                'svn checkout https://svn.example.com/repo',
+            );
+        });
+    });
+
     describe('composite', () => {
         test('should initialize root and stack if root is null', () => {
             // Arrange

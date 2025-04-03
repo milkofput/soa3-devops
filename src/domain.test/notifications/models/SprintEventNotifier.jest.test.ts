@@ -91,7 +91,7 @@ describe('SprintEventNotifier', () => {
             expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
-        test('Path 3: Pipeline failed', () => {
+        test('(UT-F7-4) Path 3: Pipeline failed', () => {
             pipeline.getStatus.returns(PipelineStatusEnum.FAILED);
 
             const event = new PipelineOutcomeEvent(sprint);
@@ -135,7 +135,7 @@ describe('SprintEventNotifier', () => {
             expect(productOwnerNotificationChannel.sendNotification.called).toBeFalsy();
         });
 
-        test('Path 5: Pipeline succeeded with product owner', () => {
+        test('(UT-F7-3) Path 5: Pipeline succeeded with product owner', () => {
             pipeline.getStatus.returns(PipelineStatusEnum.SUCCEEDED);
 
             const event = new PipelineOutcomeEvent(sprint);

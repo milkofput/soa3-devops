@@ -3,7 +3,7 @@ import { ReadyForTestingState } from '../../../../domain/issuemanagement/models/
 import { BacklogStatusChangedEvent } from '../../../../domain/notifications/models/events/BacklogStatusChangedEvent';
 import { BacklogItem } from '../../../../domain/issuemanagement/models/BacklogItem';
 
-describe('DoingState', () => {
+describe('UT-F6-1 & UT-F6-2 (deel) DoingState', () => {
     let mockBacklogItem: jest.Mocked<BacklogItem>;
     let doingState: DoingState;
 

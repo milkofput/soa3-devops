@@ -15,14 +15,14 @@ export class BacklogItem implements ISubject<BacklogItem> {
     private sprint?: Sprint;
     constructor(
         private readonly id: string,
-        private readonly title: string,
-        private readonly description: string = '',
-        private readonly storyPoints: number = 0,
+        private title: string,
+        private description: string = '',
+        private storyPoints: number = 0,
         private readonly project: Project,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
         private state: IBacklogItemState = new TodoState(this),
-    ) { }
+    ) {}
 
     addObserver(observer: IObserver<BacklogItem>): void {
         if (!this.observers.includes(observer)) {
@@ -41,6 +41,9 @@ export class BacklogItem implements ISubject<BacklogItem> {
     }
 
     assignTo(user: User): this {
+        if (this.assignee) {
+            throw new Error(`Backlog item is already assigned to ${this.assignee.getName()}`);
+        }
         this.assignee = user;
         return this;
     }
@@ -124,5 +127,17 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     setSprint(sprint: Sprint): void {
         this.sprint = sprint;
+    }
+
+    setTitle(title: string): void {
+        this.title = title;
+    }
+
+    setDescription(description: string): void {
+        this.description = description;
+    }
+
+    setStoryPoints(storyPoints: number): void {
+        this.storyPoints = storyPoints;
     }
 }

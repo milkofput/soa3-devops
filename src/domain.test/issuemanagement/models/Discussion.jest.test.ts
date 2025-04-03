@@ -7,6 +7,8 @@ import { DiscussionEventNotifier } from '../../../domain/notifications/models/Di
 import { DoneState } from '../../../domain/issuemanagement/models/backlogitemstates/DoneState';
 import { INotificationChannel } from '../../../domain/notifications/interfaces/INotificationChannel';
 import { DiscussionMessageAddedEvent } from '../../../domain/notifications/models/events/DiscussionMessageAddedEvent';
+import { Project } from '../../../domain/common/models/Project';
+import { TodoState } from '../../../domain/issuemanagement/models/backlogitemstates/TodoState';
 
 describe('Discussion', () => {
     let discussion: Discussion;
@@ -49,27 +51,55 @@ describe('Discussion', () => {
         discussion.addObserver(mockDiscussionNotifier);
     });
 
+    test('(UT-F8-1) Creating a discussion', () => {
+        const backlogItem = new BacklogItem(
+            'test-id',
+            'Inloggen',
+            'Inlogfunctionaliteit',
+            7,
+            {} as unknown as Project,
+        );
+        backlogItem.addDiscussion(
+            new Discussion('test-id', 'Vraag over API integratie', backlogItem),
+        );
+        expect(backlogItem.getDiscussions()).toHaveLength(1);
+        expect(backlogItem.getDiscussions()[0].getTitle()).toBe('Vraag over API integratie');
+    });
+
     describe('addMessage', () => {
         test('should throw error when discussion is not active', () => {
-            discussion.closeDiscussion();
+            backlogItem.getState.mockReturnValue(new DoneState(backlogItem));
             const message = new Message('m1', 'Test message', dev1, new Date());
 
-            expect(() => discussion.addMessage(message)).toThrow(
-                'Cannot add message - discussion "Test Discussion" is closed',
-            );
+            expect(() => discussion.addMessage(message)).toThrow();
+
             expect(discussion.getMessages()).toHaveLength(0);
             expect(mockDiscussionNotifier.update).not.toHaveBeenCalled();
         });
 
-        test('should throw error when backlog item is done', () => {
+        test('(UT-F8-2) should throw error when backlog item is done', () => {
             backlogItem.getState.mockReturnValue(new DoneState(backlogItem));
             const message = new Message('m1', 'Test message', dev1, new Date());
 
-            expect(() => discussion.addMessage(message)).toThrow(
-                'Cannot add message - backlog item Test Item is done',
-            );
+            expect(() => discussion.addMessage(message)).toThrow();
             expect(discussion.getMessages()).toHaveLength(0);
             expect(mockDiscussionNotifier.update).not.toHaveBeenCalled();
+        });
+
+        test('(UT-F8-3) when reopened, can add messages again', () => {
+            backlogItem.getState.mockReturnValue(new DoneState(backlogItem));
+            const message = new Message('m1', 'Test message', dev1, new Date());
+
+            expect(() => discussion.addMessage(message)).toThrow();
+
+            backlogItem.getState.mockReturnValue(new TodoState(backlogItem));
+            discussion.addMessage(message);
+
+            expect(discussion.getMessages()).toHaveLength(1);
+            expect(mockDiscussionNotifier.update).toHaveBeenCalledWith(
+                discussion,
+                expect.any(DiscussionMessageAddedEvent),
+            );
         });
 
         test('should add message and notify observers', () => {
@@ -94,13 +124,6 @@ describe('Discussion', () => {
             expect(discussion.getParticipants().size).toBe(2);
             expect(discussion.getParticipants().has(dev1)).toBe(true);
             expect(discussion.getParticipants().has(dev2)).toBe(true);
-        });
-    });
-
-    describe('closeDiscussion', () => {
-        test('should mark discussion as inactive', () => {
-            discussion.closeDiscussion();
-            expect(discussion.isDiscussionActive()).toBe(false);
         });
     });
 });

@@ -1,7 +1,7 @@
 import { FinalizedSprintState } from '../../../../domain/issuemanagement/models/sprintstates/FinalizedSprintState';
 import { Sprint } from '../../../../domain/issuemanagement/models/Sprint';
 
-describe('FinalizedSprintState', () => {
+describe('UT-F4-5 (deel) FinalizedSprintState', () => {
     let sprint: Sprint;
     let finalizedState: FinalizedSprintState;
 

@@ -15,7 +15,7 @@ class MockFinishStrategy implements ISprintStrategy {
     }
 }
 
-describe('FinishedSprintState', () => {
+describe('UT-F4-5 (deel) FinishedSprintState', () => {
     let mockFinishStrategy: MockFinishStrategy;
     let sprint: Sprint;
     let finishedState: FinishedSprintState;

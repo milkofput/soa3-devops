@@ -33,6 +33,21 @@ describe('Project', () => {
         project = new Project('p1', 'Test Project', mockBacklog, mockProductOwner);
     });
 
+    describe('UT-F1-1: Project aanmaken', () => {
+        test('Een project kan worden aangemaakt met naam “Testproject”, beschrijving “Dit is een project” en id “test-id”. Deze zijn later uit te lezen.', () => {
+            const project = new Project(
+                'test-id',
+                'Testproject',
+                mockBacklog,
+                mockProductOwner,
+                'Dit is een project',
+            );
+            expect(project.getId()).toBe('test-id');
+            expect(project.getName()).toBe('Testproject');
+            expect(project.getDescription()).toBe('Dit is een project');
+        });
+    });
+
     describe('addMembers', () => {
         test('should add single member', () => {
             const member = new User(

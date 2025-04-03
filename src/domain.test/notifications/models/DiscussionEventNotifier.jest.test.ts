@@ -77,7 +77,7 @@ describe('DiscussionEventNotifier', () => {
             expect(discussion.getParticipants).not.toHaveBeenCalled();
         });
 
-        test('Path 3: should send notifications to all participants except author', () => {
+        test('(UT-F7-5) Path 3: should send notifications to all participants except author', () => {
             notifier.update(discussion, event);
 
             expect(discussion.getParticipants).toHaveBeenCalled();
@@ -101,6 +101,29 @@ describe('DiscussionEventNotifier', () => {
 
             expect(discussion.getParticipants).toHaveBeenCalled();
             expect(mockNotificationChannel.sendNotification).not.toHaveBeenCalled();
+        });
+
+        test('(UT-F7-6) Notifications should be sent to preferred channel for each participant', () => {
+            const preferredChannel1 = {
+                sendNotification: jest.fn(),
+            } as unknown as jest.Mocked<INotificationChannel>;
+            const preferredChannel2 = {
+                sendNotification: jest.fn(),
+            } as unknown as jest.Mocked<INotificationChannel>;
+
+            (participant1 as any).preferredNotificationChannel = preferredChannel1;
+            (participant2 as any).preferredNotificationChannel = preferredChannel2;
+
+            notifier.update(discussion, event);
+
+            expect(preferredChannel1.sendNotification).toHaveBeenCalledWith(
+                participant1,
+                `New message in discussion "Test Discussion" from Author`,
+            );
+            expect(preferredChannel2.sendNotification).toHaveBeenCalledWith(
+                participant2,
+                `New message in discussion "Test Discussion" from Author`,
+            );
         });
     });
 });

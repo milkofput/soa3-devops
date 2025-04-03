@@ -9,12 +9,12 @@ export class Project {
         private readonly name: string,
         private readonly backlog: ProductBacklog,
         private readonly productOwner: User,
-        private readonly description: string = "",
+        private readonly description: string = '',
         private readonly sprints: Sprint[] = [],
         private readonly members: User[] = [],
         //private readonly scmReposity: SCMRepository,
         //private readonly pipelines: Pipeline[],
-    ) { }
+    ) {}
 
     addMembers(...members: User[]): void {
         this.members.push(...members);
@@ -31,10 +31,6 @@ export class Project {
     removeBacklogItems(...backlogItems: BacklogItem[]): void {
         this.backlog.removeBacklogItems(...backlogItems);
     }
-
-    // createPipeline(): void {
-    //     // create pipeline  
-    // }
 
     // gettters
     getId(): string {
@@ -60,5 +56,4 @@ export class Project {
     getProductOwner(): User {
         return this.productOwner;
     }
-
 }

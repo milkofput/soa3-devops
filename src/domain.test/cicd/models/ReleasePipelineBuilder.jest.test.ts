@@ -34,6 +34,25 @@ describe('ReleasePipelineBuilder', () => {
         });
     });
 
+    test('(UT-F10-1) Creating a pipeline with Sources, Package, Build, Test, Analyze, Deploy, Utility', () => {
+        builder.addSource('Source Command 1', 'Source Command 2');
+        builder.addPackage('Package Command 1', 'Package Command 2');
+        builder.addBuild('Build Command 1', 'Build Command 2');
+        builder.addTest('Test Command 1', 'Test Command 2');
+        builder.addAnalyze('Analyze Command 1', 'Analyze Command 2');
+        builder.addDeploy('Deploy Command 1', 'Deploy Command 2');
+        builder.addUtility('Utility Command 1', 'Utility Command 2');
+        builder.build();
+
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Source');
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Package');
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Build');
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Test');
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Analyze');
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Deploy');
+        expect(mockStandardBuilder.composite).toHaveBeenCalledWith('Utility');
+    });
+
     describe('addStage', () => {
         test('should add stage with commands correctly', () => {
             const commands = ['cmd1', 'cmd2'];

@@ -43,7 +43,7 @@ describe('ReviewSprintStrategy', () => {
         expect(stateArg).toBeInstanceOf(FinalizedSprintState);
     });
 
-    test('should throw an error if no document is present', () => {
+    test('(UT-F5-4) (UT-F5-5) should throw an error if no document is present', () => {
         // Arrange
         sprintMock.getDocument.mockReturnValue(undefined);
 
@@ -52,5 +52,9 @@ describe('ReviewSprintStrategy', () => {
             /Document is required/,
         );
         expect(sprintMock.changeState).not.toHaveBeenCalled();
+
+        sprintMock.getDocument.mockReturnValue(documentMock);
+        reviewStrategy.sprintFinishStrategy(sprintMock);
+        expect(sprintMock.changeState).toHaveBeenCalled();
     });
 });

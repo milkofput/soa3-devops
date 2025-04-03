@@ -3,7 +3,7 @@ import { Sprint } from '../../../../domain/issuemanagement/models/Sprint';
 import { FinishedSprintState } from '../../../../domain/issuemanagement/models/sprintstates/FinishedSprintState';
 import { CancelledSprintState } from '../../../../domain/issuemanagement/models/sprintstates/CancelledSprintState';
 
-describe('StartedSprintState', () => {
+describe('UT-F4-5 (deel) StartedSprintState', () => {
     let sprint: Sprint;
     let startedState: StartedSprintState;
 

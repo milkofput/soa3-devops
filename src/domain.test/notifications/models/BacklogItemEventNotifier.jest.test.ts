@@ -82,7 +82,7 @@ describe('BacklogItemEventNotifier', () => {
             console.log('Finished a handleTestingNotification subtest');
         });
 
-        test('Path 1: State is ReadyForTestingState, there is a member, and they are a tester', () => {
+        test('(UT-F7-1) Path 1: State is ReadyForTestingState, there is a member, and they are a tester', () => {
             const newState = new ReadyForTestingState(backlogItem);
             const event = new BacklogStatusChangedEvent(backlogItem, newState);
 
@@ -210,7 +210,7 @@ describe('BacklogItemEventNotifier', () => {
             expect(scrumMasterNotificationChannel.sendNotification).not.toHaveBeenCalled();
         });
 
-        test('Path 4: Happy path - State is TodoState with valid sprint and scrum master', () => {
+        test('(UT-F7-2) Path 4: Happy path - State is TodoState with valid sprint and scrum master', () => {
             const newState = new TodoState(backlogItem);
             const event = new BacklogStatusChangedEvent(backlogItem, newState);
 

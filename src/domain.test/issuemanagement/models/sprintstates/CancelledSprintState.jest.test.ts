@@ -1,7 +1,7 @@
 import { CancelledSprintState } from '../../../../domain/issuemanagement/models/sprintstates/CancelledSprintState';
 import { Sprint } from '../../../../domain/issuemanagement/models/Sprint';
 
-describe('CancelledSprintState', () => {
+describe('UT-F4-5 (deel) CancelledSprintState', () => {
     let sprint: Sprint;
     let cancelledState: CancelledSprintState;
 

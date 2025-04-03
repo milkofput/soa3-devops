@@ -5,7 +5,7 @@ import { DoneState } from '../../../../domain/issuemanagement/models/backlogitem
 import { ActivityStatusEnum } from '../../../../domain/issuemanagement/enums/ActivityStatusEnum';
 import { BacklogItem } from '../../../../domain/issuemanagement/models/BacklogItem';
 
-describe('TestedState', () => {
+describe('UT-F6-1 & UT-F6-2 (deel) TestedState', () => {
     let mockBacklogItem: jest.Mocked<BacklogItem>;
     let testedState: TestedState;
     let mockActivities;

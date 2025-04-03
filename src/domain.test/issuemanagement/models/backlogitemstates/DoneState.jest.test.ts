@@ -1,7 +1,7 @@
 import { DoneState } from '../../../../domain/issuemanagement/models/backlogitemstates/DoneState';
 import { BacklogItem } from '../../../../domain/issuemanagement/models/BacklogItem';
 
-describe('DoneState', () => {
+describe('UT-F6-1 & UT-F6-2 (deel) DoneState', () => {
     let mockBacklogItem: jest.Mocked<BacklogItem>;
     let doneState: DoneState;
 

@@ -2,7 +2,7 @@ import { ReadyForTestingState } from '../../../../domain/issuemanagement/models/
 import { TestingState } from '../../../../domain/issuemanagement/models/backlogitemstates/TestingState';
 import { BacklogItem } from '../../../../domain/issuemanagement/models/BacklogItem';
 
-describe('ReadyForTestingState', () => {
+describe('UT-F6-1 & UT-F6-2 (deel) ReadyForTestingState', () => {
     let mockBacklogItem: jest.Mocked<BacklogItem>;
     let readyForTestingState: ReadyForTestingState;
 

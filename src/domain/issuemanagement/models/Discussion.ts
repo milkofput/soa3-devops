@@ -16,11 +16,10 @@ export class Discussion implements ISubject<Discussion> {
         private readonly id: string,
         private readonly title: string,
         private readonly relatedItem: BacklogItem,
-        private isActive: boolean = true,
     ) {}
 
     addMessage(message: Message): void {
-        if (!this.isActive) {
+        if (this.isClosed()) {
             throw new Error(`Cannot add message - discussion "${this.title}" is closed`);
         }
 
@@ -37,8 +36,8 @@ export class Discussion implements ISubject<Discussion> {
         this.notifyObservers(new DiscussionMessageAddedEvent(this, message));
     }
 
-    closeDiscussion(): void {
-        this.isActive = false;
+    isClosed(): boolean {
+        return this.relatedItem.getState() instanceof DoneState;
     }
 
     addObserver(observer: IObserver<Discussion>): void {
@@ -68,10 +67,6 @@ export class Discussion implements ISubject<Discussion> {
 
     getRelatedItem(): BacklogItem {
         return this.relatedItem;
-    }
-
-    isDiscussionActive(): boolean {
-        return this.isActive;
     }
 
     getMessages(): Message[] {

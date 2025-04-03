@@ -2,7 +2,7 @@ import { TodoState } from '../../../../domain/issuemanagement/models/backlogitem
 import { DoingState } from '../../../../domain/issuemanagement/models/backlogitemstates/DoingState';
 import { BacklogItem } from '../../../../domain/issuemanagement/models/BacklogItem';
 
-describe('TodoState', () => {
+describe('UT-F6-1 & UT-F6-2 (deel) TodoState', () => {
     let mockBacklogItem: jest.Mocked<BacklogItem>;
     let todoState: TodoState;
 
