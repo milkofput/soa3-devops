@@ -5,7 +5,7 @@ import { INotificationChannel } from '../../domain/notifications/interfaces/INot
 export class SlackNotificationAdapter implements INotificationChannel {
     private slackNotificationLibrary = new SlackNotificationLibrary();
 
-    public sendNotification(user: User, message: String): void {
+    public sendNotification(user: User, message: string): void {
         this.slackNotificationLibrary.sendSlackMessage(user.getName(), message);
     }
 }
