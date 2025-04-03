@@ -7,7 +7,6 @@ import { ISprintState } from '../interfaces/ISprintState';
 import { CreatedSprintState } from './sprintstates/CreatedSprintState';
 import { ISprintStrategy } from '../interfaces/ISprintStrategy';
 import { Pipeline } from '../../cicd/models/Pipeline';
-import { ExecutionVisitor } from '../../cicd/models/ExecutionVisitor';
 import { IPipelineVisitor } from '../../cicd/interfaces/IPipelineVisitor';
 import { IEvent } from '../../notifications/interfaces/IEvent';
 import { PipelineOutcomeEvent } from '../../notifications/models/events/PipelineOutcomeEvent';
@@ -16,7 +15,6 @@ import { SprintReportTemplate } from '../../reports/models/SprintReportTemplate'
 export class Sprint implements ISubject<Sprint> {
     private reviewDocument?: ReviewDocument;
     private readonly observers: IObserver<Sprint>[] = [];
-    private statusMessage: string = '';
     constructor(
         private readonly id: string,
         private readonly name: string,

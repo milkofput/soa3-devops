@@ -3,8 +3,8 @@ import { Pipeline } from '../models/Pipeline';
 import { StandardPipelineBuilder } from './StandardPipelineBuilder';
 
 export class ReleasePipelineBuilder {
-    private pipelineBuilder: IPipelineBuilder;
-    private name: string;
+    private readonly pipelineBuilder: IPipelineBuilder;
+    private readonly name: string;
 
     constructor(sprintName: string) {
         this.pipelineBuilder = new StandardPipelineBuilder();
@@ -12,7 +12,7 @@ export class ReleasePipelineBuilder {
         this.pipelineBuilder.composite(this.name);
     }
 
-    private addStage(stageName: string, commands: string[]): ReleasePipelineBuilder {
+    private addStage(stageName: string, commands: string[]): this {
         this.pipelineBuilder.composite(stageName);
         commands.forEach((cmd) => this.pipelineBuilder.command(cmd));
         this.pipelineBuilder.end();
@@ -37,6 +37,14 @@ export class ReleasePipelineBuilder {
 
     public addDeploy(...commands: string[]): ReleasePipelineBuilder {
         return this.addStage('Deploy', commands);
+    }
+
+    public addPackage(...commands: string[]): ReleasePipelineBuilder {
+        return this.addStage('Package', commands);
+    }
+
+    public addUtility(...commands: string[]): ReleasePipelineBuilder {
+        return this.addStage('Utility', commands);
     }
 
     public build(): Pipeline {
