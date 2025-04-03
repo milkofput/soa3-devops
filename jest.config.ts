@@ -11,6 +11,6 @@ module.exports = {
     ],
     testMatch: ['**/*.jest.test.ts', '**/*.jest.spec.ts'],
     coverageDirectory: 'coverage',
-    coverageReporters: ['text', 'lcov', 'html'],
+    coverageReporters: ['lcov'],
     verbose: true,
 };
