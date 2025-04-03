@@ -19,15 +19,18 @@ import { Activity } from './domain/issuemanagement/models/Activity';
 import { ActivityStatusEnum } from './domain/issuemanagement/enums/ActivityStatusEnum';
 import { BurndownChartReport } from './domain/reports/models/BurndownChartReport';
 import { PDFExportStrategy } from './domain/reports/models/PDFExportStrategy';
+import { IReleasePipelineBuilder } from './domain/cicd/interfaces/IReleasePipelineBuilder';
+import { ReleasePipelineBuilder } from './domain/cicd/models/ReleasePipelineBuilder';
+import { Pipeline } from './domain/cicd/models/Pipeline';
+import { randomUUID } from 'crypto';
+import { Message } from './domain/issuemanagement/models/Message';
+import { Discussion } from './domain/issuemanagement/models/Discussion';
+import { DiscussionEventNotifier } from './domain/notifications/models/DiscussionEventNotifier';
 
 try {
     console.log('SOA3 Eindopdracht: Avans DevOps');
-
     const uuid = () => {
-        return (
-            Math.random().toString(36).substring(2, 15) +
-            Math.random().toString(36).substring(2, 15)
-        );
+        return randomUUID();
     };
 
     let productOwner = new User(
@@ -67,6 +70,7 @@ try {
     let pipeline = pipelineBuilder
         .composite('Call-a-car release')
         .composite('Build')
+        .command('git clone https://githob.com/avans-devops/call-a-car.git')
         .command('npm build')
         .end()
         .composite('Test')
@@ -74,6 +78,12 @@ try {
         .command('npm test')
         .end()
         .end()
+        .build();
+
+    let releasePipeline: Pipeline = new ReleasePipelineBuilder('Call-a-car release')
+        .addSource('git clone https://githob.com/avans-devops/call-a-car.git')
+        .addBuild('npm build')
+        .addTest('npm audit', 'npm test')
         .build();
 
     // ------------------------------ release sprint ------------------------------
@@ -115,11 +125,76 @@ try {
     callACar.addSprint(releaseSprint);
     releaseSprint.start();
 
+    //discussion
+
+    const discussion = new Discussion(
+        uuid(),
+        'Authentication Implementation',
+        releaseSprintItems[0],
+    );
+
+    // Add discussion observer
+    const discussionNotifier = new DiscussionEventNotifier();
+    discussion.addObserver(discussionNotifier);
+
+    // Test 1: Adding messages to active discussion
+    console.log('\n1. Adding messages to active discussion:');
+    const message1 = new Message(
+        uuid(),
+        'Should we use JWT or session based auth?',
+        dev1,
+        new Date(),
+    );
+    discussion.addMessage(message1);
+
+    const message2 = new Message(
+        uuid(),
+        'JWT would be better for our microservices architecture',
+        scrumMaster,
+        new Date(),
+    );
+    discussion.addMessage(message2);
+
+    const message3 = new Message(uuid(), 'Agreed, JWT is more scalable', test1, new Date());
+    discussion.addMessage(message3);
+
+    // Test 2: Mark backlog item as done
+    console.log('\n2. Testing discussion when backlog item is done:');
     releaseSprintItems[0].startDevelopment();
     releaseSprintItems[0].markReadyForTesting();
     releaseSprintItems[0].beginTesting();
     releaseSprintItems[0].completeTesting();
     releaseSprintItems[0].markAsDone();
+
+    // Should fail - backlog item is done
+    try {
+        const failMessage = new Message(
+            uuid(),
+            'This message should fail - item is done',
+            productOwner,
+            new Date(),
+        );
+        discussion.addMessage(failMessage);
+    } catch (error) {
+        console.error('Expected error:', error);
+    }
+
+    // Test 3: Close discussion explicitly
+    console.log('\n3. Testing closed discussion:');
+    discussion.closeDiscussion();
+
+    // Should fail - discussion is closed
+    try {
+        const failMessage2 = new Message(
+            uuid(),
+            'This message should fail - discussion is closed',
+            dev1,
+            new Date(),
+        );
+        discussion.addMessage(failMessage2);
+    } catch (error) {
+        console.error('Expected error:', error);
+    }
 
     releaseSprintItems[1].startDevelopment();
     releaseSprintItems[1].markReadyForTesting();
@@ -131,7 +206,7 @@ try {
     releaseSprintItems[1].completeTesting();
     releaseSprintItems[1].markAsDone();
 
-    releaseSprint.setPipeline(pipeline);
+    releaseSprint.setPipeline(releasePipeline);
 
     releaseSprint.finish();
 

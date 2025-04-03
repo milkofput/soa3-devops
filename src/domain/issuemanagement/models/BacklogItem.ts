@@ -24,7 +24,7 @@ export class BacklogItem implements ISubject<BacklogItem> {
         private readonly discussions: Discussion[] = [],
         private state: IBacklogItemState = new TodoState(this),
         //private readonly relatedBranches: Branch[] = [],
-    ) { }
+    ) {}
 
     addObserver(observer: IObserver<BacklogItem>): void {
         if (!this.observers.includes(observer)) {
@@ -130,6 +130,10 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     getDiscussions(): Discussion[] {
         return this.discussions;
+    }
+
+    getState(): IBacklogItemState {
+        return this.state;
     }
 
     setSprint(sprint: Sprint): void {

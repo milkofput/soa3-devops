@@ -5,7 +5,7 @@ import { TestedState } from './TestedState';
 import { TodoState } from './TodoState';
 
 export class TestingState implements IBacklogItemState {
-    constructor(private readonly backlogItem: BacklogItem) { }
+    constructor(private readonly backlogItem: BacklogItem) {}
 
     public moveToBacklog(): void {
         this.backlogItem.changeState(new TodoState(this.backlogItem));
