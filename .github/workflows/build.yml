@@ -21,3 +21,8 @@ jobs:
               uses: SonarSource/sonarqube-scan-action@v4
               env:
                   SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+                  SONAR_HOST_URL: https://sonarcloud.io
+              with:
+              args: >
+                  -Dsonar.organization=milkofput
+                  -Dsonar.projectKey=milkofput_soa3-devops
