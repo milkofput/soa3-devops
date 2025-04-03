@@ -1,4 +1,3 @@
-import { IPipelineBuilder } from '../interfaces/IPipelineBuilder';
 import { Pipeline } from '../models/Pipeline';
 
 export interface IReleasePipelineBuilder {

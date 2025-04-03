@@ -6,7 +6,7 @@ import { CompositePipelineStep } from './CompositePipelineStep';
 /* istanbul ignore file */
 
 export class FailingExecutionVisitor implements IPipelineVisitor {
-    private failOnCommands: string[];
+    private readonly failOnCommands: string[];
 
     constructor(failOnCommands: string[] = []) {
         this.failOnCommands = failOnCommands;
