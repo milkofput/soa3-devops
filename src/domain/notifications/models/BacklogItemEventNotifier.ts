@@ -15,10 +15,7 @@ export class BacklogItemEventNotifier implements IObserver<BacklogItem> {
     }
 
     // CC = 4
-    private handleTestingNotification(
-        subject: BacklogItem,
-        event: BacklogStatusChangedEvent,
-    ): void {
+    private handleTestingNotification(subject: BacklogItem, event: BacklogStatusChangedEvent): void {
         if (event.state instanceof ReadyForTestingState) {
             console.log('\n🧪 SENDING TESTING NOTIFICATIONS 🧪');
             const message = `Item "${subject.getTitle()}" has been moved to Testing!`;
