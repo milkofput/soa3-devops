@@ -4,6 +4,7 @@ import { BacklogStatusChangedEvent } from '../../../../domain/notifications/mode
 import { DoneState } from '../../../../domain/issuemanagement/models/backlogitemstates/DoneState';
 import { ActivityStatusEnum } from '../../../../domain/issuemanagement/enums/ActivityStatusEnum';
 import { BacklogItem } from '../../../../domain/issuemanagement/models/BacklogItem';
+import { ReadyForTestingState } from '../../../../domain/issuemanagement/models/backlogitemstates/ReadyForTestingState';
 
 describe('UT-F6-1 & UT-F6-2 (deel) TestedState', () => {
     let mockBacklogItem: jest.Mocked<BacklogItem>;
@@ -48,18 +49,20 @@ describe('UT-F6-1 & UT-F6-2 (deel) TestedState', () => {
         expect(() => testedState.startDevelopment()).toThrow(/🚫 Test Backlog Item already tested/);
     });
 
-    test('markReadyForTesting() should transition to TestedState (self-transition) and notify observers', () => {
+    test('markReadyForTesting() should transition to ReadyForTestingState and notify observers', () => {
         testedState.markReadyForTesting();
 
         expect(mockBacklogItem.changeState).toHaveBeenCalledTimes(1);
         const newState = mockBacklogItem.changeState.mock.calls[0][0];
-        expect(newState).toBeInstanceOf(TestedState);
+        expect(newState).toBeInstanceOf(ReadyForTestingState);
 
         expect(mockBacklogItem.notifyObservers).toHaveBeenCalledTimes(1);
         const event = mockBacklogItem.notifyObservers.mock.calls[0][0] as any;
         expect(event).toBeInstanceOf(BacklogStatusChangedEvent);
-        expect(event.state.constructor.name).toBe('TestedState');
-    });
+        expect(event.state.constructor.name).toBe('ReadyForTestingState');
+        expect(event.backlogItem).toBe(mockBacklogItem);
+    }
+    );
 
     test('beginTesting() should throw an error', () => {
         expect(() => testedState.beginTesting()).toThrow(/🚫 Test Backlog Item already tested/);

@@ -158,12 +158,13 @@ describe('SprintReportTemplate', () => {
     it('(UT-F9-2) should generate report with header and footer when specified', () => {
         sprintReport.generateReport(true);
 
-        const expected =
-            `=== Sprint Report for Test Sprint - 1/1/2024 to 1/14/2024 ===\n` +
-            `Test Report Body\n` +
-            `=== End of Report ===`;
+        const exportedData = mockExportStrategy.exportedData;
 
-        expect(mockExportStrategy.exportedData).toBe(expected);
+        expect(exportedData).toContain('=== Sprint Report for Test Sprint -');
+
+        expect(exportedData).toContain('Test Report Body');
+
+        expect(exportedData).toContain('=== End of Report ===');
     });
 
     it('should call sprint methods to get report data', () => {

@@ -47,7 +47,7 @@ describe('Discussion', () => {
         discussion = new Discussion('d1', 'Test Discussion', backlogItem);
         mockDiscussionNotifier = {
             update: jest.fn(),
-        };
+        } as unknown as jest.Mocked<DiscussionEventNotifier>;
         discussion.addObserver(mockDiscussionNotifier);
     });
 

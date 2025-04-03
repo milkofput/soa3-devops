@@ -18,11 +18,11 @@ export class BacklogItem implements ISubject<BacklogItem> {
         private title: string,
         private description: string = '',
         private storyPoints: number = 0,
-        private readonly project: Project,
+        private project: Project,
         private readonly activities: Activity[] = [],
         private readonly discussions: Discussion[] = [],
         private state: IBacklogItemState = new TodoState(this),
-    ) {}
+    ) { }
 
     addObserver(observer: IObserver<BacklogItem>): void {
         if (!this.observers.includes(observer)) {
@@ -84,7 +84,7 @@ export class BacklogItem implements ISubject<BacklogItem> {
         this.state = state;
     }
 
-    // getters
+    // getters and setters
     getId(): string {
         return this.id;
     }
@@ -107,6 +107,10 @@ export class BacklogItem implements ISubject<BacklogItem> {
 
     getSprint(): Sprint | undefined {
         return this.sprint;
+    }
+
+    setProject(project: Project): void {
+        this.project = project;
     }
 
     getAssignee(): User | undefined {

@@ -12,9 +12,7 @@ export class Project {
         private readonly description: string = '',
         private readonly sprints: Sprint[] = [],
         private readonly members: User[] = [],
-        //private readonly scmReposity: SCMRepository,
-        //private readonly pipelines: Pipeline[],
-    ) {}
+    ) { }
 
     addMembers(...members: User[]): void {
         this.members.push(...members);
@@ -32,7 +30,7 @@ export class Project {
         this.backlog.removeBacklogItems(...backlogItems);
     }
 
-    // gettters
+    // getters
     getId(): string {
         return this.id;
     }

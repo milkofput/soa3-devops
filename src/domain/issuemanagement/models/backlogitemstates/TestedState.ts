@@ -3,10 +3,11 @@ import { ActivityStatusEnum } from '../../enums/ActivityStatusEnum';
 import { IBacklogItemState } from '../../interfaces/IBacklogItemState';
 import { BacklogItem } from '../BacklogItem';
 import { DoneState } from './DoneState';
+import { ReadyForTestingState } from './ReadyForTestingState';
 import { TodoState } from './TodoState';
 
 export class TestedState implements IBacklogItemState {
-    constructor(private readonly backlogItem: BacklogItem) {}
+    constructor(private readonly backlogItem: BacklogItem) { }
 
     public moveToBacklog(): void {
         this.backlogItem.changeState(new TodoState(this.backlogItem));
@@ -21,10 +22,10 @@ export class TestedState implements IBacklogItemState {
     }
 
     public markReadyForTesting(): void {
-        this.backlogItem.changeState(new TestedState(this.backlogItem));
+        this.backlogItem.changeState(new ReadyForTestingState(this.backlogItem));
         console.log(`\n✅ ${this.backlogItem.getTitle()} is ready for testing`);
         this.backlogItem.notifyObservers(
-            new BacklogStatusChangedEvent(this.backlogItem, new TestedState(this.backlogItem)),
+            new BacklogStatusChangedEvent(this.backlogItem, new ReadyForTestingState(this.backlogItem)),
         );
     }
 
@@ -37,7 +38,6 @@ export class TestedState implements IBacklogItemState {
     }
 
     public markAsDone(): void {
-        // can only be done after all activities have enum ActivityStatusEnum.DONE
         if (
             this.backlogItem
                 .getActivities()

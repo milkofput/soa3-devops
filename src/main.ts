@@ -180,23 +180,6 @@ try {
         console.error('Expected error:', error);
     }
 
-    // Test 3: Close discussion explicitly
-    console.log('\n3. Testing closed discussion:');
-    discussion.closeDiscussion();
-
-    // Should fail - discussion is closed
-    try {
-        const failMessage2 = new Message(
-            uuid(),
-            'This message should fail - discussion is closed',
-            dev1,
-            new Date(),
-        );
-        discussion.addMessage(failMessage2);
-    } catch (error) {
-        console.error('Expected error:', error);
-    }
-
     releaseSprintItems[1].startDevelopment();
     releaseSprintItems[1].markReadyForTesting();
     releaseSprintItems[1].beginTesting();

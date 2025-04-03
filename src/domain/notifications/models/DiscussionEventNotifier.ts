@@ -6,16 +6,20 @@ import { DiscussionMessageAddedEvent } from './events/DiscussionMessageAddedEven
 export class DiscussionEventNotifier implements IObserver<Discussion> {
     update(subject: Discussion, event?: IEvent): void {
         if (event instanceof DiscussionMessageAddedEvent) {
-            console.log('\n💬 SENDING DISCUSSION NOTIFICATIONS 💬');
-            const message = `New message in discussion "${subject.getTitle()}" from ${event.message.getAuthor().getName()}`;
-
-            subject.getParticipants().forEach((participant) => {
-                if (participant.getId() !== event.message.getAuthor().getId()) {
-                    participant
-                        .getPreferredNotificationChannel()
-                        .sendNotification(participant, message);
-                }
-            });
+            this.handleDiscussionNotification(subject, event);
         }
+    }
+
+    private handleDiscussionNotification(subject: Discussion, event: DiscussionMessageAddedEvent): void {
+        console.log('\n💬 SENDING DISCUSSION NOTIFICATIONS 💬');
+        const message = `New message in discussion "${subject.getTitle()}" from ${event.message.getAuthor().getName()}`;
+
+        subject.getParticipants().forEach((participant) => {
+            if (participant.getId() !== event.message.getAuthor().getId()) {
+                participant
+                    .getPreferredNotificationChannel()
+                    .sendNotification(participant, message);
+            }
+        });
     }
 }
